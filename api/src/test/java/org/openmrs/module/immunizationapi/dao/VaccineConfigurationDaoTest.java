@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNull;
  * standardTestDataset.xml in openmrs-api. All test methods are executed in transactions, which are
  * rolled back by the end of each test method.
  */
-public class VaccinationConfigurationDaoTest extends BaseModuleContextSensitiveTest {
+public class VaccineConfigurationDaoTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
 	private VaccineConfigurationDao dao;
@@ -43,13 +43,13 @@ public class VaccinationConfigurationDaoTest extends BaseModuleContextSensitiveT
 		
 		assertNotNull(vc.getId());
 	}
-
+	
 	@Test
 	public void saveOrUpdate_shouldSaveVaccineConfigurationWithIntervals() {
 		VaccineConfiguration vc = new VaccineConfiguration("Polio", new Concept(1000));
 		vc.addInterval(new Interval(new TimeValue(6.0, TimeUnit.MONTHS), 1, 2));
 		vc.addInterval(new Interval(new TimeValue(12.0, TimeUnit.MONTHS), 2, 3));
-
+		
 		assertNull(vc.getId());
 		vc = dao.saveOrUpdate(vc);
 		assertNotNull(vc);
