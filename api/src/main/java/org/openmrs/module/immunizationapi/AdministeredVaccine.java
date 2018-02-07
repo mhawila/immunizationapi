@@ -34,18 +34,9 @@ public class AdministeredVaccine extends BaseOpenmrsData implements Serializable
 	@JoinColumn(name = "obs_id")
 	private Obs obs;
 	
-	@Column
-	private Integer rank = null; //first, second ...e.t.c
-	
 	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs obs) {
 		this.vaccineConfiguration = vaccineConfiguration;
 		this.obs = obs;
-	}
-	
-	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs obs, Integer rank) {
-		this.vaccineConfiguration = vaccineConfiguration;
-		this.obs = obs;
-		this.rank = rank;
 	}
 	
 	public VaccineConfiguration getVaccineConfiguration() {
@@ -62,14 +53,6 @@ public class AdministeredVaccine extends BaseOpenmrsData implements Serializable
 	
 	public void setObs(Obs obs) {
 		this.obs = obs;
-	}
-	
-	public Integer getRank() {
-		return rank;
-	}
-	
-	public void setRank(Integer rank) {
-		this.rank = rank;
 	}
 	
 	@Override

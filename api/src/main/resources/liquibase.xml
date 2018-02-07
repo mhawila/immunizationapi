@@ -71,7 +71,6 @@
             <column defaultValueNumeric="0" name="vaccine_configuration_id" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="rank" type="int"/>
             <column defaultValueNumeric="0" name="creator" type="int">
                 <constraints nullable="false"/>
             </column>

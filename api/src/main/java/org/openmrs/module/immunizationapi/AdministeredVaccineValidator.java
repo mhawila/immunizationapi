@@ -23,11 +23,5 @@ public class AdministeredVaccineValidator extends BaseCustomizableValidator impl
 		ValidationUtils.rejectIfEmpty(errors, "vaccineConfiguration",
 		    "AdministeredVaccine.error.vaccineConfiguration.required");
 		ValidationUtils.rejectIfEmpty(errors, "obs", "AdministeredVaccine.error.obs.required");
-		
-		Integer rank = administeredVaccine.getRank();
-		if (rank != null && (rank < 1 || rank > administeredVaccine.getVaccineConfiguration().getNumberOfTimes())) {
-			errors.rejectValue("rank", "AdministeredVaccine.rankCannotBeBiggerThanNumberOfTimesOrLessThanOne",
-			    "Rank value (" + rank + ") is either less than 1 or larger than number of times set");
-		}
 	}
 }

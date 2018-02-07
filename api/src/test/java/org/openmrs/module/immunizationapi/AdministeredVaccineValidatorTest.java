@@ -32,14 +32,4 @@ public class AdministeredVaccineValidatorTest extends BaseModuleContextSensitive
 		ValidateUtil.validate(administeredVaccine, errors);
 		assertTrue(errors.hasFieldErrors("obs"));
 	}
-	
-	@Test
-	public void validate_shouldFailIfProvidedRankDoesNotExistInVaccineConfiguration() {
-		VaccineConfiguration vaccineConfiguration = new VaccineConfiguration("Test V", new Concept(1), 1);
-		AdministeredVaccine administeredVaccine = new AdministeredVaccine(vaccineConfiguration, null, 2);
-		
-		Errors errors = new BindException(administeredVaccine, "administered");
-		ValidateUtil.validate(administeredVaccine, errors);
-		assertTrue(errors.hasFieldErrors("rank"));
-	}
 }
