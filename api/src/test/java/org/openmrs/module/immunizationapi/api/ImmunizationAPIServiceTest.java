@@ -14,14 +14,13 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.User;
+import org.openmrs.Concept;
+import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
-import org.openmrs.module.immunizationapi.Item;
-import org.openmrs.module.immunizationapi.api.dao.ImmunizationAPIDao;
+import org.openmrs.module.immunizationapi.VaccineConfiguration;
+import org.openmrs.module.immunizationapi.api.dao.VaccineConfigurationDao;
 import org.openmrs.module.immunizationapi.api.impl.ImmunizationAPIServiceImpl;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  * This is a unit test, which verifies logic in ImmunizationAPIService. It doesn't extend
@@ -33,7 +32,7 @@ public class ImmunizationAPIServiceTest {
 	ImmunizationAPIServiceImpl basicModuleService;
 	
 	@Mock
-	ImmunizationAPIDao dao;
+	VaccineConfigurationDao vcDao;
 	
 	@Mock
 	UserService userService;
@@ -43,21 +42,14 @@ public class ImmunizationAPIServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-	@Test
-	public void saveItem_shouldSetOwnerIfNotSet() {
-		//Given
-		Item item = new Item();
-		item.setDescription("some description");
+	@Test(expected = APIException.class)
+	public void saveVaccinationConfiguration_shouldThrowIfNumberOfTimesIsGreaterThan1ButWithoutInterval()
+	        throws APIException {
+		VaccineConfiguration vc = new VaccineConfiguration("Polio B", new Concept(2));
+		vc.setNumberOfTimes(2);
+		when(vcDao.saveOrUpdate(vc)).thenReturn(vc);
 		
-		when(dao.saveItem(item)).thenReturn(item);
-		
-		User user = new User();
-		when(userService.getUser(1)).thenReturn(user);
-		
-		//When
-		basicModuleService.saveItem(item);
-		
-		//Then
-		assertThat(item, hasProperty("owner", is(user)));
+		basicModuleService.saveVaccineConfiguration(vc);
 	}
+	
 }

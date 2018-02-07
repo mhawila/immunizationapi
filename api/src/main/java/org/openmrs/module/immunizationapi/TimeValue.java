@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TimeValue {
 	
-	@Column
+	@Column(name = "time_value")
 	private Double value;
 	
 	@Column(name = "time_unit")

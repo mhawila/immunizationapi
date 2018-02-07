@@ -2,6 +2,7 @@ package org.openmrs.module.immunizationapi;
 
 import org.openmrs.BaseCustomizableMetadata;
 import org.openmrs.Concept;
+import org.openmrs.api.APIException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Willa aka Baba Imu on 1/31/18.
@@ -21,7 +24,7 @@ import java.util.Set;
 
 @Entity(name = "immunizationapi.VaccineConfiguration")
 @Table(name = "immunizationapi_vaccine_configuration")
-public class VaccineConfiguration extends BaseCustomizableMetadata {
+public class VaccineConfiguration extends BaseCustomizableMetadata implements Serializable {
 	
 	@Id
 	@GeneratedValue
@@ -35,24 +38,27 @@ public class VaccineConfiguration extends BaseCustomizableMetadata {
 	@Column(name = "number_of_times")
 	private Integer numberOfTimes = 1;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccine_configuration_id")
-	private Set<Interval> intervals = new HashSet<Interval>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccineConfigurationId")
+	private List<Interval> intervals = new ArrayList<>();
 	
-	public VaccineConfiguration(Concept concept) {
+	public VaccineConfiguration(String name, Concept concept) {
+	    setName(name);
 		this.concept = concept;
 	}
 	
-	public VaccineConfiguration(Concept concept, Integer numberOfTimes) {
+	public VaccineConfiguration(String name, Concept concept, Integer numberOfTimes) {
+	    setName(name);
 		this.concept = concept;
 		this.numberOfTimes = numberOfTimes;
 	}
 	
-	public VaccineConfiguration(Concept concept, Integer numberOfTimes, Set<Interval> intervals) {
+	public VaccineConfiguration(String name, Concept concept, Integer numberOfTimes, List<Interval> intervals) {
+	    setName(name);
 		this.concept = concept;
 		this.numberOfTimes = numberOfTimes;
 		this.intervals = intervals;
 	}
-	
+
 	@Override
 	public Integer getId() {
 		return vaccinationConfigurationId;
@@ -87,11 +93,34 @@ public class VaccineConfiguration extends BaseCustomizableMetadata {
 		this.numberOfTimes = numberOfTimes;
 	}
 	
-	public Set<Interval> getIntervals() {
+	public List<Interval> getIntervals() {
 		return intervals;
 	}
 	
-	public void setIntervals(Set<Interval> intervals) {
+	public void setIntervals(List<Interval> intervals) {
 		this.intervals = intervals;
 	}
+
+	public void addInterval(final Interval interval) {
+	    if(intervals == null) {
+	        intervals = new ArrayList<>();
+	        intervals.add(interval);
+        }
+        else {
+	        // Check if there is any with similar rank1 and rank2
+            for(Interval iv: intervals) {
+            	if(iv.getRank1() == interval.getRank1() && iv.getRank2() == interval.getRank2()) {
+					throw new APIException("An interval with the same rank1 and rank2 already exists");
+				}
+			}
+			intervals.add(interval);
+        }
+    }
+
+    public void addIntervals(Collection<Interval> intervals) {
+		for(Interval interval: intervals) {
+			addInterval(interval);
+		}
+	}
+
 }

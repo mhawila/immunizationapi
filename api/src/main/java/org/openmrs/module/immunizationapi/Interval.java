@@ -4,16 +4,25 @@ import javax.naming.OperationNotSupportedException;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by Willa aka Baba Imu on 1/31/18.
  */
 
 @Entity(name = "immunizationapi.Interval")
-@Table(name = "immunizationapi_interval")
-public class Interval {
+@Table(name = "immunizationapi_interval", uniqueConstraints = { @UniqueConstraint(columnNames = {
+        "vaccine_configuration_id", "rank1", "rank2" }) })
+public class Interval implements Serializable {
+	
+	@Id
+	@GeneratedValue
+	private Integer interval_id;
 	
 	@Column(name = "vaccine_configuration_id")
 	@NotNull
@@ -54,6 +63,30 @@ public class Interval {
 	
 	public void setValue(TimeValue value) {
 		this.value = value;
+	}
+	
+	public Integer getInterval_id() {
+		return interval_id;
+	}
+	
+	public void setInterval_id(Integer interval_id) {
+		this.interval_id = interval_id;
+	}
+	
+	public Integer getRank1() {
+		return rank1;
+	}
+	
+	public void setRank1(Integer rank1) {
+		this.rank1 = rank1;
+	}
+	
+	public Integer getRank2() {
+		return rank2;
+	}
+	
+	public void setRank2(Integer rank2) {
+		this.rank2 = rank2;
 	}
 	
 	public VaccineConfiguration getVaccineConfiguration() throws OperationNotSupportedException {

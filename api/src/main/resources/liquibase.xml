@@ -12,28 +12,136 @@
         See http://www.liquibase.org/manual/home#available_database_refactorings
         for a list of supported elements and attributes
     -->
- 
- 	<!-- Uncomment the changeset below if you want to make the Item class persistable, see also Item and ImmunizationAPIDaoTest -->
- 	<!--
-	<changeSet id="immunizationapi-2016-08-02-12-21" author="raff">
-		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="immunizationapi_item"/></not>
-		</preConditions>
-		<comment>
-			Creating the immunizationapi_item table
-		</comment>
-		<createTable tableName="immunizationapi_item">
-			<column name="immunizationapi_item_id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
-			</column>
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true"></constraints>
-			</column>
-			<column name="owner" type="int" />
-			<column name="description" type="varchar(255)" />
-		</createTable>
-        <addForeignKeyConstraint constraintName="immunizationapi_item_owner_fk" baseTableName="immunizationapi_item" baseColumnNames="owner"  referencedTableName="users"
+
+    <changeSet id="immunizationapi-2018-02-02-12-33CST" author="Willa">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="immunizationapi_vaccine_configuration"/></not>
+        </preConditions>
+        <comment>
+            Creating the immunizationapi_vaccine_configuration table
+        </comment>
+        <createTable tableName="immunizationapi_vaccine_configuration">
+            <column name="vaccine_configuration_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)" />
+            <column name="description" type="text" />
+            <column defaultValueBoolean="false" name="retired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="DATETIME"/>
+            <column name="retired_by" type="int"/>
+            <column name="date_retired" type="DATETIME"/>
+            <column name="retire_reason" type="varchar(255)"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"></constraints>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="immunizationapi_vaccine_configuration_creator"
+                                 baseTableName="immunizationapi_vaccine_configuration" baseColumnNames="creator"
+                                 referencedTableName="users"
                                  referencedColumnNames="user_id" />
-    </changeSet> -->
- 
+        <addForeignKeyConstraint constraintName="immunizationapi_vaccine_configuration_retiree"
+                                 baseTableName="immunizationapi_vaccine_configuration" baseColumnNames="retired_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+    </changeSet>
+
+    <changeSet id="immunizationapi-2018-02-06-12-44CST" author="Willa">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="immunizationapi_administered_vaccine"/></not>
+        </preConditions>
+        <comment>
+            Creating the immunizationapi_administered_vaccine table
+        </comment>
+        <createTable tableName="immunizationapi_administered_vaccine">
+            <column name="administered_vaccine_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="obs_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="vaccine_configuration_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank" type="int"/>
+            <column defaultValueNumeric="0" name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="voided" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+            <column name="date_voided" type="DATETIME"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="DATETIME"/>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"></constraints>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="immunizationapi_vaccine_obs_fk"
+                                 baseTableName="immunizationapi_administered_vaccine" baseColumnNames="obs_id"
+                                 referencedTableName="obs"
+                                 referencedColumnNames="obs_id" />
+        <addForeignKeyConstraint constraintName="immunizationapi_vaccine_configuration_fk"
+                                 baseTableName="immunizationapi_administered_vaccine" baseColumnNames="vaccine_configuration_id"
+                                 referencedTableName="immunizationapi_vaccine_configuration"
+                                 referencedColumnNames="vaccine_configuration_id" />
+        <addForeignKeyConstraint constraintName="immunizationapi_administered_vaccine_creator"
+                                 baseTableName="immunizationapi_administered_vaccine" baseColumnNames="creator"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="immunizationapi_administered_vaccine_voider"
+                                 baseTableName="immunizationapi_administered_vaccine" baseColumnNames="voided_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="immunizationapi_administered_vaccine_changer"
+                                 baseTableName="immunizationapi_administered_vaccine" baseColumnNames="changed_by"
+                                 referencedTableName="users"
+                                 referencedColumnNames="user_id" />
+    </changeSet>
+
+     <changeSet id="immunizationapi-2018-02-06-13-05CST" author="Willa">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="immunizationapi_interval"/></not>
+        </preConditions>
+        <comment>
+            Creating the immunizationapi_interval table
+        </comment>
+        <createTable tableName="immunizationapi_interval">
+            <column name="interval_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="rank1" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank2" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vaccine_configuration_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="time_value" type="Double"/>
+            <column name="time_unit" type="ENUM('DAYS', 'WEEKS', 'MONTHS', 'YEARS', 'DECADES')">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="immunizationapi_vaccine_configuration_interval_fk"
+                                 baseTableName="immunizationapi_interval" baseColumnNames="vaccine_configuration_id"
+                                 referencedTableName="immunizationapi_vaccine_configuration"
+                                 referencedColumnNames="vaccine_configuration_id" />
+    </changeSet>
+
 </databaseChangeLog>
+

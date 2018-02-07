@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * Created by Willa aka Baba Imu on 1/31/18.
@@ -18,7 +19,7 @@ import javax.persistence.Table;
 
 @Entity(name = "immunizationapi.AdministeredEntity")
 @Table(name = "immunizationapi_administered_vaccine")
-public class AdministeredVaccine extends BaseOpenmrsData {
+public class AdministeredVaccine extends BaseOpenmrsData implements Serializable {
 	
 	@Id
 	@GeneratedValue
@@ -31,19 +32,19 @@ public class AdministeredVaccine extends BaseOpenmrsData {
 	
 	@OneToOne
 	@JoinColumn(name = "obs_id")
-	private Obs associatedObs;
+	private Obs obs;
 	
 	@Column
 	private Integer rank = null; //first, second ...e.t.c
 	
-	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs associatedObs) {
+	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs obs) {
 		this.vaccineConfiguration = vaccineConfiguration;
-		this.associatedObs = associatedObs;
+		this.obs = obs;
 	}
 	
-	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs associatedObs, Integer rank) {
+	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs obs, Integer rank) {
 		this.vaccineConfiguration = vaccineConfiguration;
-		this.associatedObs = associatedObs;
+		this.obs = obs;
 		this.rank = rank;
 	}
 	
@@ -55,12 +56,12 @@ public class AdministeredVaccine extends BaseOpenmrsData {
 		this.vaccineConfiguration = vaccineConfiguration;
 	}
 	
-	public Obs getAssociatedObs() {
-		return associatedObs;
+	public Obs getObs() {
+		return obs;
 	}
 	
-	public void setAssociatedObs(Obs associatedObs) {
-		this.associatedObs = associatedObs;
+	public void setObs(Obs obs) {
+		this.obs = obs;
 	}
 	
 	public Integer getRank() {

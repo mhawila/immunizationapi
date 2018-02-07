@@ -33,9 +33,7 @@
             <ref bean="transactionManager" />
         </property>
         <property name="target">
-            <bean class="org.openmrs.module.immunizationapi.api.impl.ImmunizationAPIServiceImpl">
-                <property name="dao" ref="immunizationapi.ImmunizationAPIDao" />
-            </bean>
+            <bean class="org.openmrs.module.immunizationapi.api.impl.ImmunizationAPIServiceImpl"/>
         </property>
         <property name="preInterceptors">
             <ref bean="serviceInterceptors" />
