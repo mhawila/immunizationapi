@@ -11,16 +11,16 @@ package org.openmrs.module.immunizationapi.dao;
 
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.module.immunizationapi.Interval;
+import org.openmrs.module.immunizationapi.TimeUnit;
+import org.openmrs.module.immunizationapi.TimeValue;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.openmrs.module.immunizationapi.api.dao.VaccineConfigurationDao;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
 /**
  * It is an integration test (extends BaseModuleContextSensitiveTest), which verifies DAO methods
@@ -42,6 +42,17 @@ public class VaccinationConfigurationDaoTest extends BaseModuleContextSensitiveT
 		vc = dao.saveOrUpdate(vc);
 		
 		assertNotNull(vc.getId());
+	}
+
+	@Test
+	public void saveOrUpdate_shouldSaveVaccineConfigurationWithIntervals() {
+		VaccineConfiguration vc = new VaccineConfiguration("Polio", new Concept(1000));
+		vc.addInterval(new Interval(new TimeValue(6.0, TimeUnit.MONTHS), 1, 2));
+		vc.addInterval(new Interval(new TimeValue(12.0, TimeUnit.MONTHS), 2, 3));
+
+		assertNull(vc.getId());
+		vc = dao.saveOrUpdate(vc);
+		assertNotNull(vc);
 	}
 	
 }
