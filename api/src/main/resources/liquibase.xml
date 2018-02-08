@@ -26,6 +26,7 @@
             </column>
             <column name="name" type="varchar(255)" />
             <column name="description" type="text" />
+            <column name="concept_id" type="int" />
             <column defaultValueBoolean="false" name="retired" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
@@ -52,6 +53,10 @@
                                  baseTableName="immunizationapi_vaccine_configuration" baseColumnNames="retired_by"
                                  referencedTableName="users"
                                  referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="immunizationapi_vaccine_configuration_concept"
+                                 baseTableName="immunizationapi_vaccine_configuration" baseColumnNames="concept_id"
+                                 referencedTableName="concept"
+                                 referencedColumnNames="concept_id" />
     </changeSet>
 
     <changeSet id="immunizationapi-2018-02-06-12-44CST" author="Willa">

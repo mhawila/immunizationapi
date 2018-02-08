@@ -4,8 +4,11 @@ import javax.naming.OperationNotSupportedException;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -24,9 +27,9 @@ public class Interval implements Serializable {
 	@GeneratedValue
 	private Integer interval_id;
 	
-	@Column(name = "vaccine_configuration_id")
-	@NotNull
-	private Integer vaccineConfigurationId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "vaccine_configuration_id")
+	private VaccineConfiguration vaccineConfiguration;
 	
 	@Embedded
 	@NotNull
@@ -37,6 +40,9 @@ public class Interval implements Serializable {
 	
 	@Column
 	private Integer rank2;
+	
+	public Interval() {
+	}
 	
 	public Interval(TimeValue value) {
 		this.value = value;
@@ -55,6 +61,14 @@ public class Interval implements Serializable {
 		
 		this.rank1 = rank1;
 		this.rank2 = rank2;
+	}
+	
+	public VaccineConfiguration getVaccineConfiguration() {
+		return vaccineConfiguration;
+	}
+	
+	public void setVaccineConfiguration(VaccineConfiguration vaccineConfiguration) {
+		this.vaccineConfiguration = vaccineConfiguration;
 	}
 	
 	public TimeValue getValue() {
@@ -89,7 +103,8 @@ public class Interval implements Serializable {
 		this.rank2 = rank2;
 	}
 	
-	public VaccineConfiguration getVaccineConfiguration() throws OperationNotSupportedException {
-		throw new OperationNotSupportedException("Not yet implemented!");
+	@Override
+	public String toString() {
+		return "vaccine: " + vaccineConfiguration + ", rank1: " + rank1 + ", rank2: " + rank2 + ", value: " + value;
 	}
 }

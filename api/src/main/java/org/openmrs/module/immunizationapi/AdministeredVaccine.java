@@ -34,6 +34,9 @@ public class AdministeredVaccine extends BaseOpenmrsData implements Serializable
 	@JoinColumn(name = "obs_id")
 	private Obs obs;
 	
+	public AdministeredVaccine() {
+	}
+	
 	public AdministeredVaccine(VaccineConfiguration vaccineConfiguration, Obs obs) {
 		this.vaccineConfiguration = vaccineConfiguration;
 		this.obs = obs;

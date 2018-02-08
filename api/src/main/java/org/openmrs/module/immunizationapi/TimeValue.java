@@ -35,4 +35,9 @@ public class TimeValue {
 	public void setUnit(TimeUnit unit) {
 		this.unit = unit;
 	}
+	
+	@Override
+	public String toString() {
+		return value + " " + unit;
+	}
 }

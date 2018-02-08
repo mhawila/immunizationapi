@@ -38,9 +38,12 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 	@Column(name = "number_of_times")
 	private Integer numberOfTimes = 1;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccineConfigurationId")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccineConfiguration")
 	private List<Interval> intervals = new ArrayList<>();
-	
+
+	public VaccineConfiguration() {
+	}
+
 	public VaccineConfiguration(String name, Concept concept) {
 	    setName(name);
 		this.concept = concept;
