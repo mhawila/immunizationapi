@@ -1,9 +1,13 @@
 package org.openmrs.module.immunizationapi;
 
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -13,6 +17,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Willa aka Baba Imu on 2/7/18.
@@ -26,25 +34,26 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
-		if (representation instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
+		DelegatingResourceDescription description = new DelegatingResourceDescription();;
+
+		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
 			description.addProperty("uuid");
 			description.addProperty("display");
+			description.addProperty("name");
 			description.addProperty("concept", Representation.REF);
-			description.addProperty("intervals", Representation.REF);
+			description.addProperty("intervals");
 			description.addProperty("numberOfTimes");
 			description.addSelfLink();
+		}
+
+		if (representation instanceof DefaultRepresentation) {
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
-		} else if (representation instanceof FullRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display");
-			description.addProperty("concept", Representation.REF);
-			description.addProperty("intervals", Representation.REF);
-			description.addProperty("numberOfTimes");
+		}
+
+		if (representation instanceof FullRepresentation) {
+			description.addProperty("description");
 			description.addProperty("auditInfo");
-			description.addSelfLink();
 			return description;
 		}
 		return null;
@@ -58,7 +67,47 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	public String getDisplayString(VaccineConfiguration vaccineConfiguration) {
 		return vaccineConfiguration.getName();
 	}
-	
+
+	/**
+	 *
+	 * @param vaccineConfiguration
+	 * @return
+	 */
+	@PropertyGetter("intervals")
+	public static List<SimpleObject> getIntervals(VaccineConfiguration vaccineConfiguration) {
+		return vaccineConfiguration.getIntervals().stream().map(interval -> {
+			return new SimpleObject()
+					.add("rank1", interval.getRank1())
+					.add("rank2",interval.getRank2())
+					.add("timeUnit", interval.getValue().getUnit().name())
+					.add("timeValue", interval.getValue().getValue());
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Annotated setter for Concept
+	 *
+	 * @param vaccineConfiguration
+	 * @param value
+	 */
+	@PropertySetter("concept")
+	public static void setConcept(VaccineConfiguration vaccineConfiguration, Object value) {
+		vaccineConfiguration.setConcept(Context.getConceptService().getConceptByUuid((String) value));
+	}
+
+	@PropertySetter("intervals")
+	public static void setIntervals(VaccineConfiguration vaccineConfiguration, Object value) {
+		List<SimpleObject> intervals = (List<SimpleObject>) value;
+		// Create Interval instances
+		List<Interval> instances = intervals.stream().map( i -> {
+			TimeUnit timeUnit = TimeUnit.valueOf(((String)i.get("timeUnit")).toUpperCase());
+			Double timeValue = ((Number)i.get("timeValue")).doubleValue();
+			return new Interval(new TimeValue(timeValue, timeUnit), (Integer)i.get("rank1"), (Integer)i.get("rank2"));
+		}).collect(Collectors.toList());
+
+		vaccineConfiguration.setIntervals(instances);
+	}
+
 	@Override
 	public VaccineConfiguration getByUniqueId(String uuid) {
 		return immunizationAPIService.getVaccineConfigurationByUuid(uuid);
@@ -77,5 +126,16 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	@Override
 	public void purge(VaccineConfiguration vaccineConfiguration, RequestContext requestContext) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException("Sorry! Purging not allowed for now");
+	}
+
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+
+		description.addProperty("intervals");
+		description.addProperty("concept");
+		description.addProperty("numberOfTimes");
+
+		return description;
 	}
 }
