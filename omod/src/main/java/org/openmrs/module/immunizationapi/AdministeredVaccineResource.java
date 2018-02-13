@@ -23,7 +23,7 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 	
 	@Autowired
 	private ImmunizationAPIService immunizationAPIService;
-	
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
 		if (representation instanceof DefaultRepresentation) {

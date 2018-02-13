@@ -1,6 +1,5 @@
 package org.openmrs.module.immunizationapi;
 
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -16,9 +15,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,9 +26,13 @@ import java.util.stream.Collectors;
         "2.0.*", "2.1.*", "2.2.*" })
 public class VaccineConfigurationResource extends MetadataDelegatingCrudResource<VaccineConfiguration> {
 	
-	@Autowired
 	private ImmunizationAPIService immunizationAPIService;
-	
+
+	public VaccineConfigurationResource() {
+		super();
+		immunizationAPIService = Context.getService(ImmunizationAPIService.class);
+	}
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();;
@@ -138,4 +139,6 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 
 		return description;
 	}
+
+
 }
