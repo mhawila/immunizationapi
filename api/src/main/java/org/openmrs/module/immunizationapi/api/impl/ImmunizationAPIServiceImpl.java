@@ -40,11 +40,6 @@ public class ImmunizationAPIServiceImpl extends BaseOpenmrsService implements Im
 	
 	@Override
 	public VaccineConfiguration saveVaccineConfiguration(VaccineConfiguration vaccineConfiguration) throws APIException {
-		// Check if number of times the vaccine is required is more than one.
-		if (vaccineConfiguration.getNumberOfTimes() > 1 && vaccineConfiguration.getIntervals().size() == 0) {
-			throw new APIException("If Vaccine is required more than one time, interval between those has to be specified");
-		}
-		
 		return vaccineConfigurationDao.saveOrUpdate(vaccineConfiguration);
 	}
 	
