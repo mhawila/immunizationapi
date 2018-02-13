@@ -28,8 +28,8 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 	
 	@Id
 	@GeneratedValue
-	@Column(name = "vaccination_configuration_id")
-	private Integer vaccinationConfigurationId;
+	@Column(name = "vaccine_configuration_id")
+	private Integer vaccineConfigurationId;
 	
 	@ManyToOne
 	@JoinColumn(name = "concept_id", referencedColumnName = "concept_id")
@@ -64,20 +64,20 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 
 	@Override
 	public Integer getId() {
-		return vaccinationConfigurationId;
+		return vaccineConfigurationId;
 	}
 	
 	@Override
 	public void setId(Integer id) {
-		vaccinationConfigurationId = id;
+		vaccineConfigurationId = id;
 	}
 	
-	public Integer getVaccinationConfigurationId() {
-		return vaccinationConfigurationId;
+	public Integer getVaccineConfigurationId() {
+		return vaccineConfigurationId;
 	}
 	
-	public void setVaccinationConfigurationId(Integer vaccinationConfigurationId) {
-		this.vaccinationConfigurationId = vaccinationConfigurationId;
+	public void setVaccineConfigurationId(Integer vaccineConfigurationId) {
+		this.vaccineConfigurationId = vaccineConfigurationId;
 	}
 	
 	public Concept getConcept() {

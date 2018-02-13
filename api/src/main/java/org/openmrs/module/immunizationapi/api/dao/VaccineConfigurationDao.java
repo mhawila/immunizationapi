@@ -35,7 +35,7 @@ public class VaccineConfigurationDao implements OpenmrsMetadataDAO<VaccineConfig
 	@Override
 	public List<VaccineConfiguration> getAll(boolean includeRetired) {
 		Criteria criteria = createAllCriteria(includeRetired);
-		return (List<VaccineConfiguration>) criteria.uniqueResult();
+		return (List<VaccineConfiguration>) criteria.list();
 	}
 	
 	@Override

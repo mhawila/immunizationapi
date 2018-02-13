@@ -147,5 +147,15 @@
                                  referencedColumnNames="vaccine_configuration_id" />
     </changeSet>
 
+    <changeSet id="immunizationapi-2018-02-13-09:58CST" author="Willa">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="hsqldb"/>
+            <tableExists tableName="immunizationapi_interval"/>
+        </preConditions>
+        <modifyColumn tableName="immunizationapi_interval">
+            <column name="time_unit" type="varchar(20)"></column>
+        </modifyColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
