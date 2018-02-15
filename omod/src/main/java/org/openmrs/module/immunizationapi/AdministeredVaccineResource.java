@@ -12,12 +12,14 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,5 +119,26 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 		description.addRequiredProperty("vaccineConfiguration");
 		description.addRequiredProperty("obs");
 		return description;
+	}
+
+	@Override
+	protected PageableResult doSearch(RequestContext context) {
+		Integer startIndex = null;
+		Integer limit = null;
+		boolean canPage = true;
+
+		String patientUuid = context.getRequest().getParameter("patient");
+		String vaccineConfigurationUuid = context.getRequest().getParameter("vaccineConfiguration");
+
+		if(canPage) {
+			startIndex = context.getStartIndex();
+			limit = context.getLimit();
+		}
+
+		List<AdministeredVaccine> searchResult = null;
+		// TODO implement getAdministeredVaccineForPatient(patient, startIndex, limit, includeRetired)
+		// TODO implement getAdministeredVaccineForVaccineConfiguration(vaccineConfiguration, startIndex, limit, includeRetired)
+		// TODO implement getAdministeredVaccineForPatient(patient, vaccineConfiguration, startIndex, limit, includeRetired)
+		return null;
 	}
 }
