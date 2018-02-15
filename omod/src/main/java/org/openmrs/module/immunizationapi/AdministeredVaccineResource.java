@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -72,6 +73,11 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 			Obs convertedObs = (Obs) ConversionUtil.convert(value, Obs.class);
 			administeredVaccine.setObs(convertedObs);
 		}
+		
+		// Set obsdatetime to now if not set yet.
+		if (administeredVaccine.getObs().getObsDatetime() == null) {
+			administeredVaccine.getObs().setObsDatetime(new Date());
+		}
 	}
 	
 	@Override
@@ -106,7 +112,10 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 	}
 	
 	@Override
-	protected String getResourceName() {
-		return super.getResourceName();
+	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("vaccineConfiguration");
+		description.addRequiredProperty("obs");
+		return description;
 	}
 }
