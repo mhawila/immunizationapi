@@ -3,6 +3,7 @@ package org.openmrs.module.immunizationapi;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Obs;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class AdministeredVaccine extends BaseOpenmrsData implements Serializable
 	@JoinColumn(name = "vaccine_configuration_id")
 	private VaccineConfiguration vaccineConfiguration;
 	
-	@OneToOne
+	@OneToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "obs_id")
 	private Obs obs;
 	

@@ -13,14 +13,14 @@ public class TimeValue {
 	
 	@Column(name = "time_value")
 	private Double value;
-
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "time_unit")
 	private TimeUnit unit;
-
+	
 	public TimeValue() {
 	}
-
+	
 	public TimeValue(Double value, TimeUnit unit) {
 		this.unit = unit;
 		this.value = value;

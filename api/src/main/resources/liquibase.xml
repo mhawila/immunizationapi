@@ -27,6 +27,7 @@
             <column name="name" type="varchar(255)" />
             <column name="description" type="text" />
             <column name="concept_id" type="int" />
+            <column name="number_of_times" type="int"/>
             <column defaultValueBoolean="false" name="retired" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>

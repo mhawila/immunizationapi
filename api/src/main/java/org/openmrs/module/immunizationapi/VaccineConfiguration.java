@@ -4,6 +4,7 @@ import org.openmrs.BaseCustomizableMetadata;
 import org.openmrs.Concept;
 import org.openmrs.api.APIException;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,9 +37,9 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 	private Concept concept;
 	
 	@Column(name = "number_of_times")
-	private Integer numberOfTimes = 1;
+	private Integer numberOfTimes = 0;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccineConfiguration")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccineConfiguration", cascade = CascadeType.ALL)
 	private List<Interval> intervals = new ArrayList<>();
 
 	public VaccineConfiguration() {
@@ -102,12 +103,15 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 	
 	public void setIntervals(List<Interval> intervals) {
 		this.intervals = intervals;
+
+		for(Interval interval: intervals) {
+			interval.setVaccineConfiguration(this);
+		}
 	}
 
 	public void addInterval(final Interval interval) {
 	    if(intervals == null) {
 	        intervals = new ArrayList<>();
-	        intervals.add(interval);
         }
         else {
 	        // Check if there is any with similar rank1 and rank2
@@ -116,8 +120,9 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 					throw new APIException("An interval with the same rank1 and rank2 already exists");
 				}
 			}
-			intervals.add(interval);
         }
+		intervals.add(interval);
+	    interval.setVaccineConfiguration(this);
     }
 
     public void addIntervals(Collection<Interval> intervals) {
