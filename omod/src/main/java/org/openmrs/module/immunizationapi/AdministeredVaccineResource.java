@@ -1,10 +1,13 @@
 package org.openmrs.module.immunizationapi;
 
+import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -13,7 +16,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 /**
  * Created by Willa aka Baba Imu on 2/6/18.
@@ -59,6 +63,17 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 		return administeredVaccine.getVaccineConfiguration().getName();
 	}
 	
+	@PropertySetter("obs")
+	public static void setObs(AdministeredVaccine administeredVaccine, Object value) {
+		if (value instanceof String) {
+			//It is a uuid
+			administeredVaccine.setObs(Context.getObsService().getObsByUuid((String) value));
+		} else if (value instanceof Map) {
+			Obs convertedObs = (Obs) ConversionUtil.convert(value, Obs.class);
+			administeredVaccine.setObs(convertedObs);
+		}
+	}
+	
 	@Override
 	public AdministeredVaccine getByUniqueId(String uuid) {
 		return immunizationAPIService.getAdministeredVaccineByUuid(uuid);
@@ -67,7 +82,7 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 	@Override
 	protected void delete(AdministeredVaccine administeredVaccine, String reason, RequestContext requestContext)
 	        throws ResponseException {
-		immunizationAPIService.retireAdministeredVaccine(administeredVaccine, reason);
+		immunizationAPIService.voidAdministeredVaccine(administeredVaccine, reason);
 	}
 	
 	@Override
@@ -88,5 +103,10 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 	@Override
 	public String getResourceVersion() {
 		return "2.0";
+	}
+	
+	@Override
+	protected String getResourceName() {
+		return super.getResourceName();
 	}
 }

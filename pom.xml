@@ -40,6 +40,12 @@
 			<layout>default</layout>
 			<url>http://repo1.maven.org/maven2</url>
 		</repository>
+		<repository>
+			<id>jfrog</id>
+			<name>OpenMRS JFrog Repository</name>
+			<layout>default</layout>
+			<url>https://openmrs.jfrog.io/openmrs/public</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
