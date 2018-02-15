@@ -9,14 +9,21 @@
  */
 package org.openmrs.module.immunizationapi.dao;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Obs;
+import org.openmrs.Person;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.PersonService;
 import org.openmrs.module.immunizationapi.AdministeredVaccine;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.openmrs.module.immunizationapi.api.dao.AdministeredVaccineDao;
 import org.openmrs.module.immunizationapi.api.dao.VaccineConfigurationDao;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -30,10 +37,44 @@ import static org.junit.Assert.assertNull;
 public class AdministeredVaccineDaoTest extends BaseModuleContextSensitiveTest {
 	
 	@Autowired
-	private AdministeredVaccineDao dao;
+	private AdministeredVaccineDao administeredVaccineDao;
+	
+	@Autowired
+	private VaccineConfigurationDao vaccineConfigurationDao;
+	
+	@Autowired
+	private ConceptService conceptService;
+	
+	@Autowired
+	private PersonService personService;
+	
+	private Concept testConcept;
+	
+	private VaccineConfiguration existingConfiguration;
+	
+	private Person existingPerson;
+	
+	@Before
+	public void setup() {
+		testConcept = conceptService.getConcept(3);
+		existingConfiguration = new VaccineConfiguration("Test Vaccine", testConcept, 1);
+		existingPerson = personService.getPerson(1);
+	}
 	
 	@Test
 	public void saveOrUpdate_shouldSaveANewAdministeredVaccine() {
 	}
 	
+	@Test
+	public void saveOrUpdate_shouldPersistNewObs() {
+		Obs associatedObs = new Obs(existingPerson, testConcept, new Date(), null);
+		associatedObs.setValueDatetime(new Date());
+		AdministeredVaccine toBeSaved = new AdministeredVaccine(existingConfiguration, associatedObs);
+		
+		assertNull("Before persisting administered_id should be null", toBeSaved.getId());
+		assertNull("Before persisting obs_id should be null", toBeSaved.getObs().getId());
+		toBeSaved = administeredVaccineDao.saveOrUpdate(toBeSaved);
+		assertNotNull("After persisting administered vaccine should not be null", toBeSaved.getId());
+		assertNotNull("After persisting obs id should not be null", toBeSaved.getObs().getId());
+	}
 }

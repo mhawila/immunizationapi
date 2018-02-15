@@ -11,6 +11,7 @@ package org.openmrs.module.immunizationapi.api.impl;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.immunizationapi.AdministeredVaccine;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
@@ -96,13 +97,16 @@ public class ImmunizationAPIServiceImpl extends BaseOpenmrsService implements Im
 	}
 	
 	@Override
-	public AdministeredVaccine retireAdministeredVaccine(AdministeredVaccine administeredVaccine, String reason)
+	public AdministeredVaccine voidAdministeredVaccine(AdministeredVaccine administeredVaccine, String reason)
 	        throws APIException {
+		Context.getObsService().voidObs(administeredVaccine.getObs(), reason);
 		return administeredVaccineDao.saveOrUpdate(administeredVaccine);
 	}
 	
 	@Override
-	public AdministeredVaccine unretireAdministeredVaccine(AdministeredVaccine administeredVaccine) throws APIException {
+	public AdministeredVaccine unVoidAdministeredVaccine(AdministeredVaccine administeredVaccine) throws APIException {
+		//Void associated obs.
+		Context.getObsService().unvoidObs(administeredVaccine.getObs());
 		return administeredVaccineDao.saveOrUpdate(administeredVaccine);
 	}
 	

@@ -130,8 +130,7 @@ public interface ImmunizationAPIService extends OpenmrsService {
 	 */
 	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
 	@Transactional
-	AdministeredVaccine retireAdministeredVaccine(AdministeredVaccine administeredVaccine, String reason)
-	        throws APIException;
+	AdministeredVaccine voidAdministeredVaccine(AdministeredVaccine administeredVaccine, String reason) throws APIException;
 	
 	/**
 	 * @param administeredVaccine
@@ -140,7 +139,7 @@ public interface ImmunizationAPIService extends OpenmrsService {
 	 */
 	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
 	@Transactional
-	AdministeredVaccine unretireAdministeredVaccine(AdministeredVaccine administeredVaccine) throws APIException;
+	AdministeredVaccine unVoidAdministeredVaccine(AdministeredVaccine administeredVaccine) throws APIException;
 	
 	/**
 	 * @param administeredVaccine

@@ -31,7 +31,7 @@ public class AdministeredVaccine extends BaseOpenmrsData implements Serializable
 	@JoinColumn(name = "vaccine_configuration_id")
 	private VaccineConfiguration vaccineConfiguration;
 	
-	@OneToOne(cascade = { CascadeType.PERSIST })
+	@OneToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "obs_id")
 	private Obs obs;
 	
