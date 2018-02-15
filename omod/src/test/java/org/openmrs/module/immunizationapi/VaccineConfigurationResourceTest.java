@@ -31,19 +31,19 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 	
 	@Autowired
 	private ConceptService conceptService;
-
+	
 	@Qualifier("immunizationapi.ImmunizationAPIService")
 	@Autowired
 	private ImmunizationAPIService immunizationAPIService;
-
+	
 	private VaccineConfigurationResource vcResource;
-
+	
 	@Before
 	public void setup() throws Exception {
 		executeDataSet(TEST_DATASET_FILENAME);
 		vcResource = new VaccineConfigurationResource();
 	}
-
+	
 	@Override
 	public VaccineConfiguration newObject() {
 		VaccineConfiguration vc = new VaccineConfiguration(VACCINE_NAME, new Concept(1000), 3);
@@ -64,14 +64,14 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 	@Test
 	public void shouldConvertANewVaccineConfiguration() {
 		SimpleObject simpleObject = createSimpleVaccineConfiguration();
-
+		
 		VaccineConfiguration converted = vcResource.convert(simpleObject);
-
+		
 		assertNotNull(converted);
 		assertEquals("Name is not set correctly", VACCINE_NAME, converted.getName());
 		assertEquals("The concept is not set", EXISTING_CONCEPT_UUID, converted.getConcept().getUuid());
 	}
-
+	
 	@Test
 	public void shouldConvertANewVaccineConfigurationWithIntervals() {
 		SimpleObject toPost = createSimpleVaccineConfiguration();
@@ -83,7 +83,7 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 		assertNotNull(converted);
 		assertTrue("interval should have one item", converted.getIntervals().size() == 1);
 	}
-
+	
 	@Test
 	public  void shouldUpdateWithNewProvidedInterval() {
 		VaccineConfiguration vaccineConfiguration =
@@ -99,32 +99,35 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 
 		assertEquals("rank1 is 1", 2, (int) vaccineConfiguration.getIntervals().get(0).getRank1());
 	}
-
+	
 	@Test
 	public void shouldRemoveAllIntervalsIfAnEmptyListIsPassed() {
-		VaccineConfiguration vaccineConfiguration =
-				immunizationAPIService.getVaccineConfigurationByUuid(EXISTING_VACCINE_CONFIGURATION_UUID);
+		VaccineConfiguration vaccineConfiguration = immunizationAPIService
+		        .getVaccineConfigurationByUuid(EXISTING_VACCINE_CONFIGURATION_UUID);
 		assertEquals("configuration has one interval", 1, vaccineConfiguration.getIntervals().size());
-
+		
 		SimpleObject toUpdate = new SimpleObject().add("intervals", new ArrayList<SimpleObject>());
-
+		
 		vcResource.update(vaccineConfiguration.getUuid(), toUpdate, new RequestContext());
-
+		
 		assertTrue("No intervals anymore", vaccineConfiguration.getIntervals().isEmpty());
 	}
-
+	
 	@Test
 	public void shouldRetireVaccineConfiguration() {
-		VaccineConfiguration vaccineConfiguration =
-				immunizationAPIService.getVaccineConfigurationByUuid(EXISTING_VACCINE_CONFIGURATION_UUID);
-
+		VaccineConfiguration vaccineConfiguration = immunizationAPIService
+		        .getVaccineConfigurationByUuid(EXISTING_VACCINE_CONFIGURATION_UUID);
+		
 		assertFalse("configuration should not retired", vaccineConfiguration.getRetired());
-
-		vcResource.delete(vaccineConfiguration, "See if it is retired", new RequestContext());
-
+		
+		String reason = "See if it is retired";
+		vcResource.delete(vaccineConfiguration, reason, new RequestContext());
+		
 		assertTrue("configuration should be retired", vaccineConfiguration.getRetired());
+		assertNotNull("Reason is set", vaccineConfiguration.getRetireReason());
+		assertEquals("Proper reason should be set", reason, vaccineConfiguration.getRetireReason());
 	}
-
+	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
@@ -134,16 +137,15 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 		assertPropPresent("numberOfTimes");
 		assertPropPresent("display");
 	}
-
+	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
 		validateDefaultRepresentation();
 		assertPropPresent("auditInfo");
 	}
-
+	
 	private SimpleObject createSimpleVaccineConfiguration() {
-		return new SimpleObject().add("name", VACCINE_NAME).add("concept", EXISTING_CONCEPT_UUID)
-				.add("numberOfTimes", 5);
+		return new SimpleObject().add("name", VACCINE_NAME).add("concept", EXISTING_CONCEPT_UUID).add("numberOfTimes", 5);
 	}
 }

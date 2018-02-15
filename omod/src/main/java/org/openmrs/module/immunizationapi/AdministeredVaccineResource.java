@@ -1,5 +1,6 @@
 package org.openmrs.module.immunizationapi;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -21,28 +22,29 @@ import org.springframework.beans.factory.annotation.Autowired;
         "2.0.*", "2.1.*", "2.2.*" })
 public class AdministeredVaccineResource extends DataDelegatingCrudResource<AdministeredVaccine> {
 	
-	@Autowired
 	private ImmunizationAPIService immunizationAPIService;
-
+	
+	public AdministeredVaccineResource() {
+		super();
+		immunizationAPIService = Context.getService(ImmunizationAPIService.class);
+	}
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display");
+		description.addProperty("vaccineConfiguration", Representation.REF);
+		description.addProperty("obs", Representation.REF);
+		description.addSelfLink();
+		
 		if (representation instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display");
-			description.addProperty("vaccineConfiguration", Representation.REF);
-			description.addProperty("obs", Representation.REF);
-			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
-		} else if (representation instanceof FullRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display");
-			description.addProperty("vaccineConfiguration", Representation.REF);
-			description.addProperty("obs", Representation.REF);
+		}
+		
+		if (representation instanceof FullRepresentation) {
 			description.addProperty("auditInfo");
-			description.addSelfLink();
 			return description;
 		}
 		return null;
@@ -81,5 +83,10 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 	@Override
 	public void purge(AdministeredVaccine administeredVaccine, RequestContext requestContext) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException("Sorry! Purging not allowed via REST");
+	}
+	
+	@Override
+	public String getResourceVersion() {
+		return "2.0";
 	}
 }

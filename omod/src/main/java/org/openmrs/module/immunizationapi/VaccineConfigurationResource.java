@@ -11,11 +11,14 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,16 +30,16 @@ import java.util.stream.Collectors;
 public class VaccineConfigurationResource extends MetadataDelegatingCrudResource<VaccineConfiguration> {
 	
 	private ImmunizationAPIService immunizationAPIService;
-
+	
 	public VaccineConfigurationResource() {
 		super();
 		immunizationAPIService = Context.getService(ImmunizationAPIService.class);
 	}
-
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();;
-
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
 		if (representation instanceof DefaultRepresentation || representation instanceof FullRepresentation) {
 			description.addProperty("uuid");
 			description.addProperty("display");
@@ -46,12 +49,12 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 			description.addProperty("numberOfTimes");
 			description.addSelfLink();
 		}
-
+		
 		if (representation instanceof DefaultRepresentation) {
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		}
-
+		
 		if (representation instanceof FullRepresentation) {
 			description.addProperty("description");
 			description.addProperty("auditInfo");
@@ -68,9 +71,8 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	public String getDisplayString(VaccineConfiguration vaccineConfiguration) {
 		return vaccineConfiguration.getName();
 	}
-
+	
 	/**
-	 *
 	 * @param vaccineConfiguration
 	 * @return
 	 */
@@ -84,10 +86,10 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 					.add("timeValue", interval.getValue().getValue());
 		}).collect(Collectors.toList());
 	}
-
+	
 	/**
 	 * Annotated setter for Concept
-	 *
+	 * 
 	 * @param vaccineConfiguration
 	 * @param value
 	 */
@@ -95,10 +97,10 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	public static void setConcept(VaccineConfiguration vaccineConfiguration, Object value) {
 		vaccineConfiguration.setConcept(Context.getConceptService().getConceptByUuid((String) value));
 	}
-
+	
 	@PropertySetter("intervals")
 	public static void setIntervals(VaccineConfiguration vaccineConfiguration, Object value) {
-		List<SimpleObject> intervals = (List<SimpleObject>) value;
+		List<LinkedHashMap> intervals = (List<LinkedHashMap>) value;
 		// Create Interval instances
 		List<Interval> instances = intervals.stream().map( i -> {
 			TimeUnit timeUnit = TimeUnit.valueOf(((String)i.get("timeUnit")).toUpperCase());
@@ -108,7 +110,7 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 
 		vaccineConfiguration.setIntervals(instances);
 	}
-
+	
 	@Override
 	public VaccineConfiguration getByUniqueId(String uuid) {
 		return immunizationAPIService.getVaccineConfigurationByUuid(uuid);
@@ -128,17 +130,26 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	public void purge(VaccineConfiguration vaccineConfiguration, RequestContext requestContext) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException("Sorry! Purging not allowed for now");
 	}
-
+	
+	@Override
+	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+		List<VaccineConfiguration> vaccineConfigurations = immunizationAPIService.getAllVaccineConfigurations();
+		return new NeedsPaging<VaccineConfiguration>(vaccineConfigurations, context);
+	}
+	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
-
+		
 		description.addProperty("intervals");
-		description.addProperty("concept");
+		description.addRequiredProperty("concept");
 		description.addProperty("numberOfTimes");
-
+		
 		return description;
 	}
-
-
+	
+	@Override
+	public String getResourceVersion() {
+		return "2.0";
+	}
 }
