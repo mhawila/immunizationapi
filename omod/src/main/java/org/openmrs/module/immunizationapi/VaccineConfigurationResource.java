@@ -57,6 +57,8 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 		
 		if (representation instanceof FullRepresentation) {
 			description.addProperty("description");
+			description.addProperty("ageFirstTimeRequired");
+			description.addProperty("ageUnit");
 			description.addProperty("auditInfo");
 			return description;
 		}
@@ -71,7 +73,17 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	public String getDisplayString(VaccineConfiguration vaccineConfiguration) {
 		return vaccineConfiguration.getName();
 	}
-	
+
+	@PropertyGetter("ageUnit")
+	public static String getAgeUnit(VaccineConfiguration vaccineConfiguration) {
+		return vaccineConfiguration.getAgeUnit().name();
+	}
+
+	@PropertySetter("ageUnit")
+	public static void setAgeUnit(VaccineConfiguration delegate, String value) {
+		delegate.setAgeUnit(TimeUnit.valueOf(value));
+	}
+
 	/**
 	 * @param vaccineConfiguration
 	 * @return
@@ -144,7 +156,9 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 		description.addProperty("intervals");
 		description.addRequiredProperty("concept");
 		description.addProperty("numberOfTimes");
-		
+		description.addProperty("ageFirstTimeRequired");
+		description.addProperty("ageUnit");
+
 		return description;
 	}
 	
