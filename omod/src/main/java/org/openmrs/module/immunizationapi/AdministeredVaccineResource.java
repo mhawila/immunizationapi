@@ -120,21 +120,21 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 		description.addRequiredProperty("obs");
 		return description;
 	}
-
+	
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		Integer startIndex = null;
 		Integer limit = null;
 		boolean canPage = true;
-
+		
 		String patientUuid = context.getRequest().getParameter("patient");
 		String vaccineConfigurationUuid = context.getRequest().getParameter("vaccineConfiguration");
-
-		if(canPage) {
+		
+		if (canPage) {
 			startIndex = context.getStartIndex();
 			limit = context.getLimit();
 		}
-
+		
 		List<AdministeredVaccine> searchResult = null;
 		// TODO implement getAdministeredVaccineForPatient(patient, startIndex, limit, includeRetired)
 		// TODO implement getAdministeredVaccineForVaccineConfiguration(vaccineConfiguration, startIndex, limit, includeRetired)
