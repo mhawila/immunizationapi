@@ -158,5 +158,26 @@
         </modifyColumn>
     </changeSet>
 
+    <changeSet id="immunizationapi-2018-02-17-07:38CST-in-flight" author="Willa">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="immunizationapi_vaccine_configuration"/>
+        </preConditions>
+        <addColumn tableName="immunizationapi_vaccine_configuration">
+            <column name="age_first_time_required" type="Double"/>
+        </addColumn>
+        <addColumn tableName="immunizationapi_vaccine_configuration">
+            <column name="age_unit" type="ENUM('DAYS', 'WEEKS', 'MONTHS', 'YEARS', 'DECADES')" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="immunizationapi-2018-02-17-08:04CST-in-flight" author="Willa">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="hsqldb"/>
+            <tableExists tableName="immunizationapi_vaccine_configuration"/>
+        </preConditions>
+        <modifyColumn tableName="immunizationapi_vaccine_configuration">
+            <column name="age_unit" type="varchar(20)"></column>
+        </modifyColumn>
+    </changeSet>
 </databaseChangeLog>
 

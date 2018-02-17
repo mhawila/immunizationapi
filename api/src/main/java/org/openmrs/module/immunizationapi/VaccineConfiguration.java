@@ -7,6 +7,8 @@ import org.openmrs.api.APIException;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -41,6 +43,13 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccineConfiguration", cascade = CascadeType.ALL)
 	private List<Interval> intervals = new ArrayList<>();
+
+	@Column(name = "age_first_time_required")
+	private Double ageFirstTimeRequired;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "age_unit")
+	private TimeUnit ageUnit;
 
 	public VaccineConfiguration() {
 	}
@@ -107,6 +116,22 @@ public class VaccineConfiguration extends BaseCustomizableMetadata implements Se
 		for(Interval interval: intervals) {
 			interval.setVaccineConfiguration(this);
 		}
+	}
+
+	public Double getAgeFirstTimeRequired() {
+		return ageFirstTimeRequired;
+	}
+
+	public void setAgeFirstTimeRequired(Double ageFirstTimeRequired) {
+		this.ageFirstTimeRequired = ageFirstTimeRequired;
+	}
+
+	public TimeUnit getAgeUnit() {
+		return ageUnit;
+	}
+
+	public void setAgeUnit(TimeUnit ageUnit) {
+		this.ageUnit = ageUnit;
 	}
 
 	public void addInterval(final Interval interval) {

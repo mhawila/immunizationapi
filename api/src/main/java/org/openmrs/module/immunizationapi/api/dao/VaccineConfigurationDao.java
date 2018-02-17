@@ -54,7 +54,7 @@ public class VaccineConfigurationDao implements OpenmrsMetadataDAO<VaccineConfig
 	public VaccineConfiguration getById(Serializable serializable) {
 		Integer id = (Integer) serializable;
 		return (VaccineConfiguration) getSession().createCriteria(VaccineConfiguration.class)
-		        .add(Restrictions.eq("vaccinationConfigurationId", id)).uniqueResult();
+		        .add(Restrictions.eq("vaccineConfigurationId", id)).uniqueResult();
 	}
 	
 	@Override
