@@ -136,9 +136,7 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 		}
 		
 		List<AdministeredVaccine> searchResult = null;
-		// TODO implement getAdministeredVaccineForPatient(patient, startIndex, limit, includeRetired)
-		// TODO implement getAdministeredVaccineForVaccineConfiguration(vaccineConfiguration, startIndex, limit, includeRetired)
-		// TODO implement getAdministeredVaccineForPatient(patient, vaccineConfiguration, startIndex, limit, includeRetired)
+		// TODO implement getAdministeredVaccineForVaccineConfiguration(vaccineConfiguration, startIndex, limit, includeVoided)
 		return null;
 	}
 }

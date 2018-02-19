@@ -73,17 +73,18 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	public String getDisplayString(VaccineConfiguration vaccineConfiguration) {
 		return vaccineConfiguration.getName();
 	}
-
+	
 	@PropertyGetter("ageUnit")
 	public static String getAgeUnit(VaccineConfiguration vaccineConfiguration) {
-		return vaccineConfiguration.getAgeUnit().name();
+		TimeUnit ageUnit = vaccineConfiguration.getAgeUnit();
+		return ageUnit == null ? "" : ageUnit.name();
 	}
-
+	
 	@PropertySetter("ageUnit")
 	public static void setAgeUnit(VaccineConfiguration delegate, String value) {
 		delegate.setAgeUnit(TimeUnit.valueOf(value));
 	}
-
+	
 	/**
 	 * @param vaccineConfiguration
 	 * @return
@@ -158,7 +159,7 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 		description.addProperty("numberOfTimes");
 		description.addProperty("ageFirstTimeRequired");
 		description.addProperty("ageUnit");
-
+		
 		return description;
 	}
 	

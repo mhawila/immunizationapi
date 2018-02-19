@@ -76,34 +76,34 @@ public class VaccineConfigurationDaoTest extends BaseModuleContextSensitiveTest 
 		        .setProjection(Projections.rowCount());
 		assertEquals("Two intervals should be persisted", 2l, criteria.uniqueResult());
 	}
-
+	
 	@Test
 	public void saveOrUpdate_shouldSaveVaccineConfigurationWithAgeIfSet() {
 		VaccineConfiguration vc = makeStarterVaccineConfiguration();
-
+		
 		double ageRequired = 2.0;
 		vc.setAgeFirstTimeRequired(ageRequired);
 		vc.setAgeUnit(TimeUnit.valueOf("YEARS"));
-
+		
 		assertNull(vc.getId());
 		vc = dao.saveOrUpdate(vc);
-
+		
 		// Ensure the age_first_time_required & age_unit fields are populated. (Pull fresh).
 		Integer newId = vc.getId();
 		assertNotNull(newId);
 		sessionFactory.getCurrentSession().evict(vc);
-
+		
 		vc = dao.getById(newId);
-
+		
 		assertEquals("age first time should be populated", ageRequired, vc.getAgeFirstTimeRequired(), 0.01);
 		assertEquals("age unit should be populated", "YEARS", vc.getAgeUnit().name());
 	}
-
+	
 	private VaccineConfiguration makeStarterVaccineConfiguration() {
 		VaccineConfiguration vc = new VaccineConfiguration("Polio", testConcept);
 		vc.addInterval(new Interval(new TimeValue(6.0, TimeUnit.MONTHS), 1, 2));
 		vc.addInterval(new Interval(new TimeValue(12.0, TimeUnit.MONTHS), 2, 3));
-
+		
 		return vc;
 	}
 }

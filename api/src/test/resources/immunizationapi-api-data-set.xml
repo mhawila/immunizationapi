@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept concept_id="6000" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_description concept_description_id="1" concept_id="6000" description="A custom concept" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_name concept_id="6000" name="Test Concept" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1439" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_numeric concept_id="6000" hi_normal="250.0" low_critical="0.0" units="" precise="0"/>
+
+    <immunizationapi_vaccine_configuration vaccine_configuration_id="1" name="Example Vaccine" description="Obviously this is simply for testing" concept_id="6000" retired="false" creator="1" date_created="2014-08-12 15:10:20.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce88683e"/>
+    <immunizationapi_interval  interval_id="1" vaccine_configuration_id="1" rank1="1" rank2="2" time_value="10" time_unit="MONTHS"/>
+
+    <immunizationapi_vaccine_configuration vaccine_configuration_id="2" name="Example2 Vaccine" description="Another one simply for testing" number_of_times="1"
+                                           concept_id="6000" retired="false" creator="1" date_created="2014-10-12 15:10:20.0" uuid="92f4c600-147a-11e8-a00f-0242ac110002"/>
+
+    <obs obs_id="10000" person_id="7" concept_id="20" obs_datetime="2009-08-15 00:00:00.0" location_id="1" value_datetime="2009-08-14 00:00:00.0" comments="" creator="1" date_created="2009-08-19 12:32:38.0" voided="false" uuid="99b92980-db62-40cd-8bca-732257c48106"/>
+    <obs obs_id="10001" person_id="8" concept_id="20" obs_datetime="2007-08-15 00:00:00.0" location_id="1" value_datetime="2007-08-14 00:00:00.0" comments="" creator="1" date_created="2007-08-19 12:32:38.0" voided="false" uuid="99b92980-db62-40cd-8bca-713357c48107"/>
+    <obs obs_id="10002" person_id="8" concept_id="20" obs_datetime="2008-08-15 00:00:00.0" location_id="1" value_datetime="2008-08-14 00:00:00.0" comments="" creator="1" date_created="2008-08-19 12:32:38.0" voided="false" uuid="b251c1f6-1465-11e8-a00f-0242ac110002"/>
+    <obs obs_id="10003" person_id="8" concept_id="20" obs_datetime="2009-08-15 00:00:00.0" location_id="1" value_datetime="2009-08-14 00:00:00.0" comments="" creator="1" date_created="2009-08-19 12:32:38.0" voided="false" uuid="456fe257-1467-11e8-a00f-0242ac110002"/>
+    <obs obs_id="10004" person_id="8" concept_id="20" obs_datetime="2010-08-15 00:00:00.0" location_id="1" value_datetime="2010-08-14 00:00:00.0" comments="" creator="1" date_created="2010-08-19 12:32:38.0" voided="false" uuid="7cb86993-1467-11e8-a00f-0242ac110002"/>
+
+    <immunizationapi_administered_vaccine administered_vaccine_id="1" vaccine_configuration_id="1" obs_id="14" creator="1" date_created="2005-04-10 10:34:23.0"
+          voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122cety68dd"/>
+    <immunizationapi_administered_vaccine administered_vaccine_id="2" vaccine_configuration_id="1" obs_id="10000" creator="1" date_created="2009-08-19 12:33:38.0"
+                                          voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce5468dd"/>
+    <immunizationapi_administered_vaccine administered_vaccine_id="3" vaccine_configuration_id="1" obs_id="10001" creator="1" date_created="2009-08-19 12:33:38.0"
+                                          voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122cr2168dd"/>
+    <immunizationapi_administered_vaccine administered_vaccine_id="4" vaccine_configuration_id="1" obs_id="10002" creator="1" date_created="2009-08-20 12:33:38.0"
+                                          voided="true" date_voided="2010-08-20 12:33:38.0" void_reason="experiment" voided_by="1" uuid="c52f9a7b-1469-11e8-a00f-0242ac110002"/>
+    <immunizationapi_administered_vaccine administered_vaccine_id="5" vaccine_configuration_id="1" obs_id="10003" creator="1" date_created="2009-09-20 12:33:38.0"
+                                          voided="false" uuid="263ff7b6-146a-11e8-a00f-0242ac110002"/>
+    <immunizationapi_administered_vaccine administered_vaccine_id="6" vaccine_configuration_id="2" obs_id="10004" creator="1" date_created="2009-09-21 12:33:38.0"
+                                          voided="false" uuid="4d097882-146a-11e8-a00f-0242ac110002"/>
+</dataset>
