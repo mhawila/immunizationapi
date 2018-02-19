@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.immunizationapi.api;
 
+import org.openmrs.Patient;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -201,4 +202,65 @@ public interface ImmunizationAPIService extends OpenmrsService {
 	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
 	@Transactional(readOnly = true)
 	Integer getCountOfAllAdministeredVaccines(boolean includeVoided) throws APIException;
+	
+	/**
+	 * @param patient
+	 * @param vaccineConfiguration
+	 * @param startIndex
+	 * @param limit
+	 * @param includeVoided
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, VaccineConfiguration vaccineConfiguration,
+	        Integer startIndex, Integer limit, boolean includeVoided);
+	
+	/**
+	 * @param patient
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient);
+	
+	/**
+	 * @param patient
+	 * @param vaccineConfiguration
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, VaccineConfiguration vaccineConfiguration);
+	
+	/**
+	 * @param patient
+	 * @param startIndex
+	 * @param limit
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, Integer startIndex, Integer limit);
+	
+	/**
+	 * @param patient
+	 * @param startIndex
+	 * @param limit
+	 * @param includeVoided
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, Integer startIndex, Integer limit,
+	        boolean includeVoided);
+	
+	/**
+	 * @param patient
+	 * @param includeVoided
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, boolean includeVoided);
 }

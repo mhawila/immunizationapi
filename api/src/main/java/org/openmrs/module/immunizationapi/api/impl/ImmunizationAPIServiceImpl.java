@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.immunizationapi.api.impl;
 
+import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -143,5 +144,39 @@ public class ImmunizationAPIServiceImpl extends BaseOpenmrsService implements Im
 	@Override
 	public Integer getCountOfAllAdministeredVaccines(boolean includeVoided) throws APIException {
 		return administeredVaccineDao.getAllCount(includeVoided);
+	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient,
+	        VaccineConfiguration vaccineConfiguration, Integer startIndex, Integer limit, boolean includeVoided) {
+		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, vaccineConfiguration, startIndex, limit,
+		    includeVoided);
+	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient) {
+		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, null, null, null, false);
+	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient,
+	        VaccineConfiguration vaccineConfiguration) {
+		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, vaccineConfiguration, null, null, false);
+	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, Integer startIndex, Integer limit) {
+		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, null, startIndex, limit, false);
+	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, Integer startIndex, Integer limit,
+	        boolean includeVoided) {
+		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, null, startIndex, limit, includeVoided);
+	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, boolean includeVoided) {
+		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, null, null, null, includeVoided);
 	}
 }
