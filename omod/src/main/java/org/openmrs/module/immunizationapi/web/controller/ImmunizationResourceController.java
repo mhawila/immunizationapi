@@ -1,9 +1,16 @@
 package org.openmrs.module.immunizationapi.web.controller;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.Patient;
+import org.openmrs.api.PatientService;
+import org.openmrs.module.immunizationapi.VaccineConfiguration;
+import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,12 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * Created by Willa aka Baba Imu on 2/13/18.
  */
 @RestController
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/immunizationapi")
 public class ImmunizationResourceController extends MainResourceController {
+	
+	@Autowired
+	private ImmunizationAPIService immunizationAPIService;
+	
+	@Autowired
+	private PatientService patientService;
 	
 	public ImmunizationResourceController() {
 		super();
@@ -68,6 +83,37 @@ public class ImmunizationResourceController extends MainResourceController {
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		return super.get(resource, request, response);
+	}
+	
+	@RequestMapping(value = "/administeredvaccine", method = RequestMethod.GET)
+	public Object searchAdministeredVaccines(@RequestParam(value = "patient") String patientUuid,
+	        @RequestParam(value = "vaccineConfiguration") String vaccineConfigurationUuid, @RequestParam Integer startIndex,
+	        @RequestParam Integer limit, @RequestParam(defaultValue = "false") boolean includeVoided,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		
+		Patient patient = null;
+		VaccineConfiguration configuration = null;
+		
+		if (isNotBlank(patientUuid)) {
+			patient = patientService.getPatientByUuid(patientUuid);
+		}
+		
+		if (isNotBlank(vaccineConfigurationUuid)) {
+			configuration = immunizationAPIService.getVaccineConfigurationByUuid(vaccineConfigurationUuid);
+		}
+		
+		if (patient != null) {
+			return immunizationAPIService.getAdministeredVaccinesForPatient(patient, configuration, startIndex, limit,
+			    includeVoided);
+		}
+		
+		if (configuration != null) {
+			return immunizationAPIService.getAdministeredVaccinesForVaccineConfiguration(configuration, startIndex, limit,
+			    includeVoided);
+		}
+		
+		throw new ResourceDoesNotSupportOperationException("Either patient or configuration uuid have to be passed for"
+		        + "search to be conducted");
 	}
 	
 	@Override

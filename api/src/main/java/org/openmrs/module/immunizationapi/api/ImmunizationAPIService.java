@@ -263,4 +263,16 @@ public interface ImmunizationAPIService extends OpenmrsService {
 	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
 	@Transactional(readOnly = true)
 	List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, boolean includeVoided);
+	
+	/**
+	 * @param vaccineConfiguration
+	 * @param startIndex
+	 * @param limit
+	 * @param includeVoided
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<AdministeredVaccine> getAdministeredVaccinesForVaccineConfiguration(VaccineConfiguration vaccineConfiguration,
+	        Integer startIndex, Integer limit, boolean includeVoided);
 }

@@ -179,4 +179,11 @@ public class ImmunizationAPIServiceImpl extends BaseOpenmrsService implements Im
 	public List<AdministeredVaccine> getAdministeredVaccinesForPatient(Patient patient, boolean includeVoided) {
 		return administeredVaccineDao.getAdministeredVaccinesForPatient(patient, null, null, null, includeVoided);
 	}
+	
+	@Override
+	public List<AdministeredVaccine> getAdministeredVaccinesForVaccineConfiguration(
+	        VaccineConfiguration vaccineConfiguration, Integer startIndex, Integer limit, boolean includeVoided) {
+		return administeredVaccineDao.getAdministeredVaccineForVaccineConfiguration(vaccineConfiguration, startIndex, limit,
+		    includeVoided);
+	}
 }
