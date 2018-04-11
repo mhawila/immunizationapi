@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.immunizationapi.RestTestConstants.EXISTING_CONCEPT_UUID;
 import static org.openmrs.module.immunizationapi.RestTestConstants.EXISTING_VACCINE_CONFIGURATION_UUID;
@@ -126,6 +127,32 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 		assertTrue("configuration should be retired", vaccineConfiguration.getRetired());
 		assertNotNull("Reason is set", vaccineConfiguration.getRetireReason());
 		assertEquals("Proper reason should be set", reason, vaccineConfiguration.getRetireReason());
+	}
+	
+	@Test
+	public void update_shouldRetireOrUnretireVaccineConfigurationIfRetiredPropertyIsIncluded() {
+		VaccineConfiguration configuration = immunizationAPIService
+		        .getVaccineConfigurationByUuid(EXISTING_VACCINE_CONFIGURATION_UUID);
+		
+		assertFalse("configuration should not retired", configuration.getRetired());
+		assertTrue(configuration.getRetireReason() == null || configuration.getRetireReason().length() == 0);
+		
+		String reason = "Pumzisha hii kitu";
+		
+		SimpleObject toUpdate = new SimpleObject().add("retired", true).add("retireReason", reason);
+		
+		vcResource.update(configuration.getUuid(), toUpdate, new RequestContext());
+		
+		assertTrue(configuration.getRetired());
+		assertEquals("reason should be set", reason, configuration.getRetireReason());
+		
+		toUpdate = new SimpleObject().add("retired", "no");
+		vcResource.update(configuration.getUuid(), toUpdate, new RequestContext());
+		
+		assertFalse("Should be unretired", configuration.getRetired());
+		assertNull("reason should be null", configuration.getRetireReason());
+		assertNull("retiredby should be null", configuration.getRetiredBy());
+		assertNull("date retired should be null", configuration.getDateRetired());
 	}
 	
 	@Override

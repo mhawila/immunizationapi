@@ -1,5 +1,6 @@
 package org.openmrs.module.immunizationapi;
 
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -161,6 +162,51 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 		description.addProperty("ageUnit");
 		
 		return description;
+	}
+	
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.addProperty("retired");
+		description.addProperty("retireReason");
+		
+		return description;
+	}
+	
+	@Override
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+		if (propertiesToUpdate.containsKey("retired")) {
+			String retireReason = "Webservices post call with body having retired property set to true";
+			if (propertiesToUpdate.containsKey("retireReason")) {
+				retireReason = propertiesToUpdate.get("retireReason");
+			}
+			
+			VaccineConfiguration configuration = immunizationAPIService.getVaccineConfigurationByUuid(uuid);
+			Object retiredProperty = propertiesToUpdate.get("retired");
+			Class retiredClass = retiredProperty.getClass();
+			Boolean retiredValue = null;
+			if (retiredClass == Boolean.class) {
+				retiredValue = (Boolean) retiredProperty;
+			} else if (retiredClass == String.class) {
+				retiredValue = Boolean.valueOf((String) retiredProperty);
+			} else {
+				throw new APIException("Wrong value format passed for retired property" + retiredClass);
+			}
+			
+			if (retiredValue) {
+				delete(configuration, retireReason, context);
+			} else {
+				// Unretire because it is false. (I don't like this below, it is basically removing all auditing info!
+				configuration.setRetired(false);
+				configuration.setDateRetired(null);
+				configuration.setRetiredBy(null);
+				configuration.setRetireReason(null);
+				configuration = immunizationAPIService.saveVaccineConfiguration(configuration);
+			}
+			return configuration;
+		} else {
+			return super.update(uuid, propertiesToUpdate, context);
+		}
 	}
 	
 	@Override
