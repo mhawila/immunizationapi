@@ -100,7 +100,39 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 
 		assertEquals("rank1 is 1", 2, (int) vaccineConfiguration.getIntervals().get(0).getRank1());
 	}
-	
+
+	@Test
+	public void shouldUpdateAnExistingIntervalIfTheRanksMatch() {
+		VaccineConfiguration vaccineConfiguration =
+				immunizationAPIService.getVaccineConfigurationByUuid(EXISTING_VACCINE_CONFIGURATION_UUID);
+		int initialIntervalsCount = vaccineConfiguration.getIntervals().size();
+		// Get the first one.
+		Interval interval = vaccineConfiguration.getIntervals().get(0);
+		int rank1 = interval.getRank1();
+		int rank2 = interval.getRank2();
+
+		SimpleObject toUpdate = new SimpleObject();
+		List<SimpleObject> intervals = new ArrayList<>();
+		int timeValue = 2;
+		String timeUnit = "YEARS";
+		intervals.add(new SimpleObject().add("timeUnit", timeUnit).add("timeValue", timeValue).add("rank1", rank1).add("rank2", rank2));
+		intervals.add(new SimpleObject().add("timeUnit", "months").add("timeValue", 3).add("rank1", 2).add("rank2", 3));
+		toUpdate.add("intervals", intervals);
+
+		vcResource.update(vaccineConfiguration.getUuid(), toUpdate, new RequestContext());
+
+		List<Interval> updatedIntervals = vaccineConfiguration.getIntervals();
+		assertEquals("# of intervals should remain the same", initialIntervalsCount + 1, updatedIntervals.size());
+
+		Interval withSameRanks = updatedIntervals.stream()
+				.filter(interval1 -> interval1.getRank1() == rank1 && interval1.getRank2() == rank2)
+				.findFirst()
+				.get();
+		assertNotNull(withSameRanks);
+		assertEquals((double) timeValue, withSameRanks.getValue().getValue().doubleValue(), 0.001);
+		assertEquals("Unit should be updated", timeUnit, withSameRanks.getValue().getUnit().name());
+	}
+
 	@Test
 	public void shouldRemoveAllIntervalsIfAnEmptyListIsPassed() {
 		VaccineConfiguration vaccineConfiguration = immunizationAPIService
