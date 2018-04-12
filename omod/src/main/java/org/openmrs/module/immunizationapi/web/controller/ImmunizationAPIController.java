@@ -25,7 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * This class configured as controller using annotation and mapped with the URL of
+ * This class is created by the module generator. (i.e. I may not need this) This class configured
+ * as controller using annotation and mapped with the URL of
  * 'module/${rootArtifactid}/${rootArtifactid}Link.form'.
  */
 @Controller("immunizationapi.ImmunizationAPIController")

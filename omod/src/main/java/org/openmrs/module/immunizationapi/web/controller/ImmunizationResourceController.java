@@ -1,8 +1,9 @@
 package org.openmrs.module.immunizationapi.web.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.immunizationapi.ImmunizationAPIConstants;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -11,6 +12,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,10 @@ public class ImmunizationResourceController extends MainResourceController {
 	
 	@Autowired
 	private PatientService patientService;
+	
+	@Autowired
+	@Qualifier("adminService")
+	private AdministrationService adminService;
 	
 	public ImmunizationResourceController() {
 		super();
@@ -114,6 +120,26 @@ public class ImmunizationResourceController extends MainResourceController {
 		
 		throw new ResourceDoesNotSupportOperationException("Either patient or configuration uuid have to be passed for"
 		        + "search to be conducted");
+	}
+	
+	/**
+	 * This controller method fetches and returns the value of the searched global property value.
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/globalproperty", method = RequestMethod.GET)
+	public String getImmunizationGlobalPropertyValue(@RequestParam(value = "property") String property,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		switch (property) {
+			case ImmunizationAPIConstants.GP_VACCINE_CONCEPT_SET:
+			case ImmunizationAPIConstants.GP_VACCINE_CONCEPT_CLASS:
+				return adminService.getGlobalProperty(property);
+		}
+		
+		StringBuilder sb = new StringBuilder("Unknown property name passed ").append(property)
+		        .append(", supported property names are ").append(ImmunizationAPIConstants.GP_VACCINE_CONCEPT_CLASS)
+		        .append(" and ").append(ImmunizationAPIConstants.GP_VACCINE_CONCEPT_SET);
+		throw new ResourceDoesNotSupportOperationException(sb.toString());
 	}
 	
 	@Override
