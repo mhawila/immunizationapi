@@ -39,25 +39,71 @@
 	 /AOP -->
 	
 	
-	<!-- Required Privileges 
+	<!-- Required Privileges -->
 	<privilege>
-		<name>Form Entry</name>
-		<description>Allows user to access Form Entry pages/functions</description>
+		<name>ImmunizationAPI: Manage Vaccine Configurations</name>
+		<description>Allow users to Create/View/Edit/Delete the vaccine configurations</description>
 	</privilege>
-	 /Required Privileges -->
+	<privilege>
+		<name>ImmunizationAPI: Create Vaccine Configurations</name>
+		<description>Allow users to create the vaccine configurations</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: Edit Vaccine Configurations</name>
+		<description>Allow users to Edit the vaccine configurations</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: View Vaccine Configurations</name>
+		<description>Allow users to View the vaccine configurations</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: Delete Vaccine Configurations</name>
+		<description>Allow users to Delete the vaccine configurations</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: Manage Administered Vaccines</name>
+		<description>Allow users to Create/View/Edit/Delete the administered Vaccines</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: Create Administered Vaccines</name>
+		<description>Allow users to create the administered Vaccines</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: Edit Administered Vaccines</name>
+		<description>Allow users to Edit the administered Vaccines</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: View Administered Vaccines</name>
+		<description>Allow users to View the administered Vaccines</description>
+	</privilege>
+	<privilege>
+		<name>ImmunizationAPI: Delete Administered Vaccines</name>
+		<description>Allow users to Delete the administered Vaccines</description>
+	</privilege>
+	<!--Required Privileges -->
 
 
-	<!-- Required Global Properties 
+	<!-- Required Global Properties -->
 	<globalProperty>
-		<property>@MODULE_ID@.someProperty</property>
+		<property>${project.parent.artifactId}.vaccine.conceptSet</property>
 		<defaultValue></defaultValue>
 		<description>
-			A description of the global property goes here.  The description
-			should explain enough for administrators to understand the purpose
-			and possible values for the global property.
+			The UUID (or concept map - may be later) of the concept which is a convenient set grouping the vaccine
+			concepts together. If not set, the search is performed against the entire dictionary which may not be optimal
+			in most cases.
 		</description>
 	</globalProperty>
-	/Required Global Properties -->
+	<globalProperty>
+		<property>${project.parent.artifactId}.vaccine.conceptClass</property>
+		<defaultValue></defaultValue>
+		<description>
+			The UUID of the concept class to search against. If not provided all type of class will be searched.
+			If the convenient set is provided this may not be necessary. However if both are provided the search is
+			performed agains the set and the class. So if a concept belongs to the set but is not of the specified class
+			it won't be included.
+		</description>
+	</globalProperty>
+	<!--Required Global Properties -->
 	
 	<!--
 	<dwr>

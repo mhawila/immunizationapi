@@ -100,7 +100,7 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 
 		assertEquals("rank1 is 1", 2, (int) vaccineConfiguration.getIntervals().get(0).getRank1());
 	}
-
+	
 	@Test
 	public void shouldUpdateAnExistingIntervalIfTheRanksMatch() {
 		VaccineConfiguration vaccineConfiguration =
@@ -132,7 +132,7 @@ public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest
 		assertEquals((double) timeValue, withSameRanks.getValue().getValue().doubleValue(), 0.001);
 		assertEquals("Unit should be updated", timeUnit, withSameRanks.getValue().getUnit().name());
 	}
-
+	
 	@Test
 	public void shouldRemoveAllIntervalsIfAnEmptyListIsPassed() {
 		VaccineConfiguration vaccineConfiguration = immunizationAPIService
