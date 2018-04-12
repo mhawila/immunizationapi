@@ -82,8 +82,8 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	}
 	
 	@PropertySetter("ageUnit")
-	public static void setAgeUnit(VaccineConfiguration delegate, String value) {
-		delegate.setAgeUnit(TimeUnit.valueOf(value));
+	public static void setAgeUnit(VaccineConfiguration delegate, Object value) {
+		delegate.setAgeUnit(TimeUnit.valueOf(((String) value).toUpperCase()));
 	}
 	
 	/**
