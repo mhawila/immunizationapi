@@ -45,18 +45,21 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 			description.addProperty("uuid");
 			description.addProperty("display");
 			description.addProperty("name");
-			description.addProperty("concept", Representation.REF);
-			description.addProperty("intervals");
-			description.addProperty("numberOfTimes");
 			description.addSelfLink();
 		}
 		
 		if (representation instanceof DefaultRepresentation) {
+			description.addProperty("concept", Representation.REF);
+			description.addProperty("intervals");
+			description.addProperty("numberOfTimes");
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		}
 		
 		if (representation instanceof FullRepresentation) {
+			description.addProperty("concept", Representation.DEFAULT);
+			description.addProperty("intervals");
+			description.addProperty("numberOfTimes");
 			description.addProperty("description");
 			description.addProperty("ageFirstTimeRequired");
 			description.addProperty("ageUnit");

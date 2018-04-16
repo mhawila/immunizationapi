@@ -41,16 +41,18 @@ public class AdministeredVaccineResource extends DataDelegatingCrudResource<Admi
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("display");
-		description.addProperty("vaccineConfiguration", Representation.REF);
-		description.addProperty("obs", Representation.REF);
 		description.addSelfLink();
 		
 		if (representation instanceof DefaultRepresentation) {
+			description.addProperty("vaccineConfiguration", Representation.DEFAULT);
+			description.addProperty("obs", Representation.DEFAULT);
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		}
 		
 		if (representation instanceof FullRepresentation) {
+			description.addProperty("vaccineConfiguration", Representation.FULL);
+			description.addProperty("obs", Representation.FULL);
 			description.addProperty("auditInfo");
 			return description;
 		}

@@ -3,11 +3,15 @@ package org.openmrs.module.immunizationapi.web.controller;
 import org.openmrs.Patient;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.immunizationapi.AdministeredVaccine;
+import org.openmrs.module.immunizationapi.AdministeredVaccineResource;
 import org.openmrs.module.immunizationapi.ImmunizationAPIConstants;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
@@ -18,10 +22,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -92,13 +99,17 @@ public class ImmunizationResourceController extends MainResourceController {
 	}
 	
 	@RequestMapping(value = "/administeredvaccine", method = RequestMethod.GET)
-	public Object searchAdministeredVaccines(@RequestParam(value = "patient") String patientUuid,
-	        @RequestParam(value = "vaccineConfiguration") String vaccineConfigurationUuid, @RequestParam Integer startIndex,
-	        @RequestParam Integer limit, @RequestParam(defaultValue = "false") boolean includeVoided,
-	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		
+	@ResponseBody
+	public Object searchAdministeredVaccines(@RequestParam(value = "patient", required = false) String patientUuid,
+	        @RequestParam(value = "vaccineConfiguration", required = false) String vaccineConfigurationUuid,
+			HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		Patient patient = null;
 		VaccineConfiguration configuration = null;
+		AdministeredVaccineResource resource = new AdministeredVaccineResource();
+
 		
 		if (isNotBlank(patientUuid)) {
 			patient = patientService.getPatientByUuid(patientUuid);
@@ -107,15 +118,23 @@ public class ImmunizationResourceController extends MainResourceController {
 		if (isNotBlank(vaccineConfigurationUuid)) {
 			configuration = immunizationAPIService.getVaccineConfigurationByUuid(vaccineConfigurationUuid);
 		}
-		
-		if (patient != null) {
-			return immunizationAPIService.getAdministeredVaccinesForPatient(patient, configuration, startIndex, limit,
-			    includeVoided);
-		}
-		
-		if (configuration != null) {
-			return immunizationAPIService.getAdministeredVaccinesForVaccineConfiguration(configuration, startIndex, limit,
-			    includeVoided);
+
+		if(patient != null  || configuration != null) {
+			List<AdministeredVaccine> administeredVaccines = null;
+			if (patient != null) {
+				administeredVaccines = immunizationAPIService
+						.getAdministeredVaccinesForPatient(patient, configuration, context.getStartIndex(),
+								context.getLimit(),context.getIncludeAll());
+			}
+			else if (configuration != null) {
+				administeredVaccines = immunizationAPIService
+						.getAdministeredVaccinesForVaccineConfiguration(configuration, context.getStartIndex(),
+								context.getLimit(), context.getIncludeAll());
+			}
+
+			return new SimpleObject().add("results", administeredVaccines.stream()
+					.map(administeredVaccine -> resource.asRepresentation(administeredVaccine, context.getRepresentation()))
+					.collect(Collectors.toList()));
 		}
 		
 		throw new ResourceDoesNotSupportOperationException("Either patient or configuration uuid have to be passed for"
