@@ -52,6 +52,8 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("intervals");
 			description.addProperty("numberOfTimes");
+			description.addProperty("ageFirstTimeRequired");
+			description.addProperty("ageUnit");
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		}
