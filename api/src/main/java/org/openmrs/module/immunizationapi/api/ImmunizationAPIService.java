@@ -100,6 +100,18 @@ public interface ImmunizationAPIService extends OpenmrsService {
 	List<VaccineConfiguration> getAllVaccineConfigurations(boolean includeRetired) throws APIException;
 	
 	/**
+	 * @param includeRetired
+	 * @param firstResult
+	 * @param maxResult
+	 * @return
+	 * @throws APIException
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<VaccineConfiguration> getAllVaccineConfigurations(boolean includeRetired, Integer firstResult, Integer maxResult)
+	        throws APIException;
+	
+	/**
 	 * @return
 	 * @throws APIException
 	 */

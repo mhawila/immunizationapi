@@ -156,8 +156,26 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 	
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		List<VaccineConfiguration> vaccineConfigurations = immunizationAPIService.getAllVaccineConfigurations();
-		return new NeedsPaging<VaccineConfiguration>(vaccineConfigurations, context);
+		Integer startIndex = null;
+		Integer limit = null;
+		boolean includeRetired = Boolean.parseBoolean(context.getParameter("includeAll"));
+
+		try {
+			startIndex = Integer.valueOf(context.getParameter("startIndex"));
+		}
+		catch (NumberFormatException e) {
+			// Ignore
+		}
+
+		try {
+			limit = Integer.valueOf(context.getParameter("limit"));
+		}
+		catch (NumberFormatException e) {
+			// Ignore
+		}
+
+		List<VaccineConfiguration> vaccineConfigurations = immunizationAPIService.getAllVaccineConfigurations(includeRetired, startIndex, limit);
+		return new NeedsPaging<>(vaccineConfigurations, context);
 	}
 	
 	@Override
@@ -256,8 +274,7 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 						log.debug("Passed illegal value " + passedSearchMode + " for search mode");
 					}
 				}
-				List<VaccineConfiguration> found = immunizationAPIService.searchVaccineConfigurations(searchText, mode,
-				    includeRetired, startIndex, limit);
+				List<VaccineConfiguration> found = immunizationAPIService.searchVaccineConfigurations(searchText, mode, includeRetired, startIndex, limit);
 				return new NeedsPaging<>(found, context).toSimpleObject(this);
 			}
 		}

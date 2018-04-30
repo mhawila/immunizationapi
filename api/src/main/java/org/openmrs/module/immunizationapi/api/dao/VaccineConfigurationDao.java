@@ -36,20 +36,20 @@ public class VaccineConfigurationDao implements OpenmrsMetadataDAO<VaccineConfig
 	
 	@Override
 	public List<VaccineConfiguration> getAll(boolean includeRetired) {
-		Criteria criteria = createAllCriteria(includeRetired);
+		Criteria criteria = createAllCriteria(includeRetired, null, null);
 		return (List<VaccineConfiguration>) criteria.list();
 	}
 	
 	@Override
 	public int getAllCount(boolean includeRetired) {
-		Criteria criteria = createAllCriteria(includeRetired);
+		Criteria criteria = createAllCriteria(includeRetired, null, null);
 		return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
 	}
 	
 	@Override
 	public List<VaccineConfiguration> getAll(boolean includeRetired, Integer firstResult, Integer maxResult) {
-		Criteria criteria = createAllCriteria(includeRetired);
-		return (List<VaccineConfiguration>) criteria.setFirstResult(firstResult).setMaxResults(maxResult).list();
+		Criteria criteria = createAllCriteria(includeRetired, firstResult, maxResult);
+		return (List<VaccineConfiguration>) criteria.list();
 	}
 	
 	@Override
@@ -87,11 +87,19 @@ public class VaccineConfigurationDao implements OpenmrsMetadataDAO<VaccineConfig
 		return createNameSearchCriteria(searchText, mode, includeRetired, firstResult, maxResult).list();
 	}
 	
-	private Criteria createAllCriteria(boolean includeRetired) {
+	private Criteria createAllCriteria(boolean includeRetired, Integer firstResult, Integer maxResult) {
 		Criteria criteria = getSession().createCriteria(VaccineConfiguration.class, "vc");
 		
 		if (!includeRetired) {
 			criteria.add(Restrictions.eq("retired", false));
+		}
+		
+		if (firstResult != null) {
+			criteria.setFirstResult(firstResult);
+		}
+		
+		if (maxResult != null) {
+			criteria.setMaxResults(maxResult);
 		}
 		
 		return criteria;

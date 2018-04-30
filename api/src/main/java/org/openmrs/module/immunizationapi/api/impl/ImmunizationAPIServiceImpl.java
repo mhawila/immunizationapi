@@ -83,6 +83,12 @@ public class ImmunizationAPIServiceImpl extends BaseOpenmrsService implements Im
 	}
 	
 	@Override
+	public List<VaccineConfiguration> getAllVaccineConfigurations(boolean includeRetired, Integer firstResult,
+	        Integer maxResult) throws APIException {
+		return vaccineConfigurationDao.getAll(includeRetired, firstResult, maxResult);
+	}
+	
+	@Override
 	public Integer getCountOfAllVaccineConfigurations() throws APIException {
 		return vaccineConfigurationDao.getAllCount(false);
 	}
