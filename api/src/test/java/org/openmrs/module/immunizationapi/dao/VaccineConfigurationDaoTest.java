@@ -17,6 +17,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.immunizationapi.Interval;
+import org.openmrs.module.immunizationapi.SearchMode;
 import org.openmrs.module.immunizationapi.TimeUnit;
 import org.openmrs.module.immunizationapi.TimeValue;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
@@ -24,9 +25,13 @@ import org.openmrs.module.immunizationapi.api.dao.VaccineConfigurationDao;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * It is an integration test (extends BaseModuleContextSensitiveTest), which verifies DAO methods
@@ -48,7 +53,8 @@ public class VaccineConfigurationDaoTest extends BaseModuleContextSensitiveTest 
 	private Concept testConcept;
 	
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
+		executeDataSet("immunizationapi-api-data-set.xml");
 		testConcept = conceptService.getConcept(3);
 	}
 	
@@ -74,7 +80,7 @@ public class VaccineConfigurationDaoTest extends BaseModuleContextSensitiveTest 
 		// Ensure intervals are persisted to the underlying datastore
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Interval.class)
 		        .setProjection(Projections.rowCount());
-		assertEquals("Two intervals should be persisted", 2l, criteria.uniqueResult());
+		assertEquals("Two intervals should be persisted", 3l, criteria.uniqueResult());
 	}
 	
 	@Test
@@ -97,6 +103,43 @@ public class VaccineConfigurationDaoTest extends BaseModuleContextSensitiveTest 
 		
 		assertEquals("age first time should be populated", ageRequired, vc.getAgeFirstTimeRequired(), 0.01);
 		assertEquals("age unit should be populated", "YEARS", vc.getAgeUnit().name());
+	}
+	
+	@Test
+	public void search_shouldSearchAtTheBeginningWithSearchText() {
+		String expectedName = "Example Vaccine";
+		List<VaccineConfiguration> configs = dao.search("Example", SearchMode.START, false, 0, 50);
+		
+		assertFalse(configs.isEmpty());
+		assertTrue(configs.get(0).getName().equals(expectedName));
+		
+		configs = dao.search("No where at the begining", SearchMode.START, true, 0, 50);
+		assertTrue(configs.isEmpty());
+	}
+	
+	@Test
+	public void search_shouldSearchAtTheEndWithSearchText() {
+		String expectedName = "Another Example Vaccine Too";
+		List<VaccineConfiguration> configs = dao.search("too", SearchMode.END, false, 0, 50);
+		
+		assertFalse(configs.isEmpty());
+		assertTrue(configs.get(0).getName().equals(expectedName));
+		
+		configs = dao.search("No where at the begining", SearchMode.END, true, 0, 50);
+		assertTrue(configs.isEmpty());
+	}
+	
+	@Test
+	public void search_shouldSearchAnywhereWithSearchText() {
+		List<VaccineConfiguration> configs = dao.search("Vaccine", SearchMode.ANYWHERE, false, 0, 50);
+		assertEquals(2, configs.size());
+	}
+	
+	@Test
+	public void searchCountAndCountReturnedShouldBeEqual() {
+		List<VaccineConfiguration> configs = dao.search("Vaccine", SearchMode.ANYWHERE, false, 0, 50);
+		int count = dao.getCountOfSearch("Vaccine", SearchMode.ANYWHERE, false, 0, 50);
+		assertTrue(count == configs.size());
 	}
 	
 	private VaccineConfiguration makeStarterVaccineConfiguration() {

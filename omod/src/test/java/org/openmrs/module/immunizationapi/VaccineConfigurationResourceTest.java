@@ -30,9 +30,6 @@ import static org.openmrs.module.immunizationapi.RestTestConstants.VACCINE_NAME;
  */
 public class VaccineConfigurationResourceTest extends BaseDelegatingResourceTest<VaccineConfigurationResource, VaccineConfiguration> {
 	
-	@Autowired
-	private ConceptService conceptService;
-	
 	@Qualifier("immunizationapi.ImmunizationAPIService")
 	@Autowired
 	private ImmunizationAPIService immunizationAPIService;

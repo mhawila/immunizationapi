@@ -15,6 +15,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.immunizationapi.AdministeredVaccine;
 import org.openmrs.module.immunizationapi.ImmunizationAPIConfig;
+import org.openmrs.module.immunizationapi.SearchMode;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,6 +115,135 @@ public interface ImmunizationAPIService extends OpenmrsService {
 	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
 	@Transactional(readOnly = true)
 	Integer getCountOfAllVaccineConfigurations(boolean includeRetired) throws APIException;
+	
+	/**
+	 * This method returns the count of all vaccine configurations that would be returned if an
+	 * actual search would have been performed instead. The search is based on the name of the
+	 * configuration
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @param includeRetired
+	 * @param firstResut
+	 * @param maxResults
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired,
+	        Integer firstResut, Integer maxResults) throws APIException;
+	
+	/**
+	 * This method returns the count of all vaccine configurations that would be returned if an
+	 * actual search would have been performed instead. The search is based on the name of the
+	 * configuration includeRetired = false
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @param firstResut
+	 * @param maxResults
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode, Integer firstResut, Integer maxResults)
+	        throws APIException;
+	
+	/**
+	 * This method returns the count of all vaccine configurations that would be returned if an
+	 * actual search would have been performed instead. The search is based on the name of the
+	 * configuration disregarding paging in this case
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @param includeRetired
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired)
+	        throws APIException;
+	
+	/**
+	 * This method returns the count of all vaccine configurations that would be returned if an
+	 * actual search would have been performed instead. The search is based on the name of the
+	 * configuration includeRetired = false, no paging involved
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode) throws APIException;
+	
+	/**
+	 * This method searches the name of vaccine configurations and returns results.
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @param includeRetired
+	 * @param firstResut
+	 * @param maxResults
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<VaccineConfiguration> searchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired,
+	        Integer firstResut, Integer maxResults) throws APIException;
+	
+	/**
+	 * This method searches the name of vaccine configurations and returns results. includeRetired =
+	 * false.
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @param firstResut
+	 * @param maxResults
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<VaccineConfiguration> searchVaccineConfigurations(String searchText, SearchMode mode, Integer firstResut,
+	        Integer maxResults) throws APIException;
+	
+	/**
+	 * This method searches the name of vaccine configurations and returns results. includeRetired =
+	 * false, searchMode = anywhere
+	 * 
+	 * @param searchText
+	 * @param firstResut
+	 * @param maxResults
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<VaccineConfiguration> searchVaccineConfigurations(String searchText, Integer firstResut, Integer maxResults)
+	        throws APIException;
+	
+	/**
+	 * This method searches the name of vaccine configurations and returns results.
+	 * 
+	 * @param searchText
+	 * @param mode Either start, end or anywhere
+	 * @param includeRetired
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<VaccineConfiguration> searchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired)
+	        throws APIException;
+	
+	/**
+	 * This method searches the name of vaccine configurations and returns results. includeRetired =
+	 * false, searchMode = anywhere
+	 * 
+	 * @param searchText
+	 * @return
+	 */
+	@Authorized(ImmunizationAPIConfig.MODULE_PRIVILEGE)
+	@Transactional(readOnly = true)
+	List<VaccineConfiguration> searchVaccineConfigurations(String searchText) throws APIException;
 	
 	/**
 	 * @param administeredVaccine

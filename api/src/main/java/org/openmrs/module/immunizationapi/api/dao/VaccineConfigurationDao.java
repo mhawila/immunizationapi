@@ -12,9 +12,11 @@ package org.openmrs.module.immunizationapi.api.dao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Concept;
 import org.openmrs.api.db.OpenmrsMetadataDAO;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
+import org.openmrs.module.immunizationapi.SearchMode;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -74,11 +76,50 @@ public class VaccineConfigurationDao implements OpenmrsMetadataDAO<VaccineConfig
 		return vaccineConfiguration;
 	}
 	
+	public int getCountOfSearch(String searchText, SearchMode mode, boolean includeRetired, Integer firstResult,
+	        Integer maxResult) {
+		Criteria criteria = createNameSearchCriteria(searchText, mode, includeRetired, firstResult, maxResult);
+		return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+	}
+	
+	public List<VaccineConfiguration> search(String searchText, SearchMode mode, boolean includeRetired,
+	        Integer firstResult, Integer maxResult) {
+		return createNameSearchCriteria(searchText, mode, includeRetired, firstResult, maxResult).list();
+	}
+	
 	private Criteria createAllCriteria(boolean includeRetired) {
 		Criteria criteria = getSession().createCriteria(VaccineConfiguration.class, "vc");
 		
 		if (!includeRetired) {
 			criteria.add(Restrictions.eq("retired", false));
+		}
+		
+		return criteria;
+	}
+	
+	private Criteria createNameSearchCriteria(String searchText, SearchMode mode, boolean includeRetired,
+	        Integer firstResult, Integer maxResult) {
+		Criteria criteria = getSession().createCriteria(VaccineConfiguration.class);
+		
+		if (SearchMode.START.equals(mode)) {
+			criteria.add(Restrictions.ilike("name", searchText + "%"));
+		} else if (SearchMode.END.equals(mode)) {
+			criteria.add(Restrictions.ilike("name", "%" + searchText));
+		} else {
+			// Do it everywhere
+			criteria.add(Restrictions.ilike("name", "%" + searchText + "%"));
+		}
+		
+		if (!includeRetired) {
+			criteria.add(Restrictions.eq("retired", false));
+		}
+		
+		if (firstResult != null) {
+			criteria.setFirstResult(firstResult);
+		}
+		
+		if (maxResult != null) {
+			criteria.setMaxResults(maxResult);
 		}
 		
 		return criteria;

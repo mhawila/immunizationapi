@@ -15,6 +15,7 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.immunizationapi.AdministeredVaccine;
+import org.openmrs.module.immunizationapi.SearchMode;
 import org.openmrs.module.immunizationapi.VaccineConfiguration;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
 import org.openmrs.module.immunizationapi.api.dao.AdministeredVaccineDao;
@@ -89,6 +90,58 @@ public class ImmunizationAPIServiceImpl extends BaseOpenmrsService implements Im
 	@Override
 	public Integer getCountOfAllVaccineConfigurations(boolean includeRetired) throws APIException {
 		return vaccineConfigurationDao.getAllCount(includeRetired);
+	}
+	
+	@Override
+	public Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired,
+	        Integer firstResut, Integer maxResults) throws APIException {
+		return vaccineConfigurationDao.getCountOfSearch(searchText, mode, includeRetired, firstResut, maxResults);
+	}
+	
+	@Override
+	public Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode, Integer firstResut,
+	        Integer maxResults) throws APIException {
+		return vaccineConfigurationDao.getCountOfSearch(searchText, mode, false, firstResut, maxResults);
+	}
+	
+	@Override
+	public Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired)
+	        throws APIException {
+		return vaccineConfigurationDao.getCountOfSearch(searchText, mode, includeRetired, null, null);
+	}
+	
+	@Override
+	public Integer getCountOfSearchVaccineConfigurations(String searchText, SearchMode mode) throws APIException {
+		return vaccineConfigurationDao.getCountOfSearch(searchText, mode, false, null, null);
+	}
+	
+	@Override
+	public List<VaccineConfiguration> searchVaccineConfigurations(String searchText, SearchMode mode,
+	        boolean includeRetired, Integer firstResut, Integer maxResults) throws APIException {
+		return vaccineConfigurationDao.search(searchText, mode, includeRetired, firstResut, maxResults);
+	}
+	
+	@Override
+	public List<VaccineConfiguration> searchVaccineConfigurations(String searchText, SearchMode mode, Integer firstResut,
+	        Integer maxResults) throws APIException {
+		return vaccineConfigurationDao.search(searchText, mode, false, firstResut, maxResults);
+	}
+	
+	@Override
+	public List<VaccineConfiguration> searchVaccineConfigurations(String searchText, Integer firstResut, Integer maxResults)
+	        throws APIException {
+		return vaccineConfigurationDao.search(searchText, SearchMode.ANYWHERE, false, firstResut, maxResults);
+	}
+	
+	@Override
+	public List<VaccineConfiguration> searchVaccineConfigurations(String searchText, SearchMode mode, boolean includeRetired)
+	        throws APIException {
+		return vaccineConfigurationDao.search(searchText, mode, false, null, null);
+	}
+	
+	@Override
+	public List<VaccineConfiguration> searchVaccineConfigurations(String searchText) throws APIException {
+		return vaccineConfigurationDao.search(searchText, SearchMode.ANYWHERE, false, null, null);
 	}
 	
 	/***** AdministeredVaccine related stuff ***/

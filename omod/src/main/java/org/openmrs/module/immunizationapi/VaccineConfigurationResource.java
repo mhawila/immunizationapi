@@ -1,5 +1,6 @@
 package org.openmrs.module.immunizationapi;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.immunizationapi.api.ImmunizationAPIService;
@@ -19,8 +20,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -212,6 +216,52 @@ public class VaccineConfigurationResource extends MetadataDelegatingCrudResource
 		} else {
 			return super.update(uuid, propertiesToUpdate, context);
 		}
+	}
+	
+	@Override
+	public SimpleObject search(RequestContext context) throws ResponseException {
+		// Allowed parameter to search (for allow name and concept)
+		Set<String> params = context.getRequest().getParameterMap().keySet();
+		for (String param : params) {
+			if (param.equalsIgnoreCase("concept")) {
+				throw new ResourceDoesNotSupportOperationException(
+				        "passing concept not yet support, stay tuned, it will be in the future");
+			}
+			if (param.equalsIgnoreCase("name")) {
+				String searchText = context.getParameter("name");
+				Integer startIndex = null;
+				Integer limit = null;
+				boolean includeRetired = Boolean.parseBoolean(context.getParameter("includeAll"));
+				try {
+					startIndex = Integer.valueOf(context.getParameter("startIndex"));
+				}
+				catch (NumberFormatException e) {
+					// Ignore
+				}
+				
+				try {
+					limit = Integer.valueOf(context.getParameter("limit"));
+				}
+				catch (NumberFormatException e) {
+					// Ignore
+				}
+				
+				String passedSearchMode = context.getParameter("searchMode");
+				SearchMode mode = SearchMode.ANYWHERE;
+				if (StringUtils.isNotBlank(passedSearchMode)) {
+					try {
+						mode = SearchMode.valueOf(passedSearchMode);
+					}
+					catch (IllegalArgumentException iae) {
+						log.debug("Passed illegal value " + passedSearchMode + " for search mode");
+					}
+				}
+				List<VaccineConfiguration> found = immunizationAPIService.searchVaccineConfigurations(searchText, mode,
+				    includeRetired, startIndex, limit);
+				return new NeedsPaging<>(found, context).toSimpleObject(this);
+			}
+		}
+		return super.search(context);
 	}
 	
 	@Override
