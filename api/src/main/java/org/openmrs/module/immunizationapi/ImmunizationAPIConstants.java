@@ -7,5 +7,5 @@ public class ImmunizationAPIConstants {
 	
 	public static final String GP_VACCINE_CONCEPT_SET = "immunizationapi.vaccine.conceptSet";
 	
-	public static final String GP_VACCINE_CONCEPT_CLASS = "immunizationapi.vaccine.conceptClass";
+	public static final String GP_VACCINE_DATE_CONCEPT = "immunizationapi.vaccine.dateConcept";
 }

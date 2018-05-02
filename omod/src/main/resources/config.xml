@@ -88,19 +88,16 @@
 		<property>${project.parent.artifactId}.vaccine.conceptSet</property>
 		<defaultValue></defaultValue>
 		<description>
-			The UUID (or concept map - may be later) of the concept which is a convenient set grouping the vaccine
+			The optional UUID (or concept map - may be later) of the concept which is a convenient set grouping the vaccine
 			concepts together. If not set, the search is performed against the entire dictionary which may not be optimal
-			in most cases.
+			in most cases.(if blank or concepts of class drug will be searched)
 		</description>
 	</globalProperty>
 	<globalProperty>
-		<property>${project.parent.artifactId}.vaccine.conceptClass</property>
+		<property>${project.parent.artifactId}.vaccine.dateConcept</property>
 		<defaultValue></defaultValue>
 		<description>
-			The UUID of the concept class to search against. If not provided all type of class will be searched.
-			If the convenient set is provided this may not be necessary. However if both are provided the search is
-			performed agains the set and the class. So if a concept belongs to the set but is not of the specified class
-			it won't be included.
+			The UUID of the concept for vaccination date.
 		</description>
 	</globalProperty>
 	<!--Required Global Properties -->

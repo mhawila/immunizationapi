@@ -147,18 +147,14 @@ public class ImmunizationResourceController extends MainResourceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/globalproperty", method = RequestMethod.GET)
-	public String getImmunizationGlobalPropertyValue(@RequestParam(value = "property") String property,
+	@ResponseBody
+	public SimpleObject getImmunizationGlobalPropertyValue(@RequestParam(value = "property") String property,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		switch (property) {
-			case ImmunizationAPIConstants.GP_VACCINE_CONCEPT_SET:
-			case ImmunizationAPIConstants.GP_VACCINE_CONCEPT_CLASS:
-				return adminService.getGlobalProperty(property);
+		String propertyValue = adminService.getGlobalProperty(property);
+		if(propertyValue == null) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
-		
-		StringBuilder sb = new StringBuilder("Unknown property name passed ").append(property)
-		        .append(", supported property names are ").append(ImmunizationAPIConstants.GP_VACCINE_CONCEPT_CLASS)
-		        .append(" and ").append(ImmunizationAPIConstants.GP_VACCINE_CONCEPT_SET);
-		throw new ResourceDoesNotSupportOperationException(sb.toString());
+		return new SimpleObject().add("value", propertyValue);
 	}
 	
 	@Override
