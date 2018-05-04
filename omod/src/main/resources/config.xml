@@ -100,6 +100,20 @@
 			The UUID of the concept for vaccination date.
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.vaccine.encounterType</property>
+		<defaultValue></defaultValue>
+		<description>
+			The UUID of the vaccine encounter type.
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.vaccine.encounterRole</property>
+		<defaultValue></defaultValue>
+		<description>
+			The UUID of the vaccine encounter role.
+		</description>
+	</globalProperty>
 	<!--Required Global Properties -->
 	
 	<!--
